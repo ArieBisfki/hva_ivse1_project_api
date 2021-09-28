@@ -1,0 +1,22 @@
+{
+  "name": "ivse_1_project_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArieBisfki/hva_ivse1_project_api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArieBisfki/hva_ivse1_project_api/issues"
+  },
+  "homepage": "https://github.com/ArieBisfki/hva_ivse1_project_api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
