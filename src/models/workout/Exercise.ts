@@ -1,4 +1,4 @@
-export class Excercise{
+export class Exercise{
 
     constructor (
         readonly name: String,

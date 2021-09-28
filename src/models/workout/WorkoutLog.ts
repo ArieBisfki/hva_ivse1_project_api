@@ -1,8 +1,9 @@
-import { ExcerciseLog } from "../interfaces/ExcerciseLog";
+import { ExerciseLog } from "../ExerciseLog";
 
 export default class WorkoutLog{
+    
     constructor(
-        readonly excerciseLogs: ExcerciseLog[] = [],
+        readonly exerciseLogs: ExerciseLog[] = [],
         readonly date: Date = new Date()
     ) {}
 }
