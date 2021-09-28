@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get(
     "/",
-    async (req: Request, res: Response): Promise<Response> => {
+    (req: Request, res: Response) => {
         return res.status(200).send({
             message: "Hello World!",
         });
@@ -17,7 +17,7 @@ app.get(
 );
 
 try {
-    app.listen(port, (): void => {
+    app.listen(port, () => {
         console.log(`Connected successfully on port ${port}`);
     });
 } catch (error) {
