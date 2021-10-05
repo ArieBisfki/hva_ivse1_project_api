@@ -1,8 +1,8 @@
-import Repository from "../Interface";
+import Interface from "../Interface";
 import WorkoutLog from "../../../models/workout/WorkoutLog";
 import Errors from "../Errors";
 
-export default class InMem implements Repository {
+export default class InMem implements Interface {
     private workoutLogs: WorkoutLog[] = [];
 
     async delete(id: number): Promise<void> {
