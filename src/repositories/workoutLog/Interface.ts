@@ -1,6 +1,6 @@
 import WorkoutLog from "../../models/workout/WorkoutLog";
 
-export default interface Repository {
+export default interface Interface {
     create(workoutLog: WorkoutLog): Promise<WorkoutLog>;
     delete(id: number): Promise<void>;
     update(workoutLog: WorkoutLog): Promise<WorkoutLog>;
