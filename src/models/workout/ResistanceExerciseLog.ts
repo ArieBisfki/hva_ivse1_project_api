@@ -5,9 +5,9 @@ export class ResistanceExerciseLog implements ExerciseLog{
 
     constructor(
         readonly exercise: Exercise,
-        readonly reps: Number, 
-        readonly sets: Number, 
-        readonly weight: Number
+        readonly reps: number,
+        readonly sets: number,
+        readonly weight: number
     ){}
 
 }

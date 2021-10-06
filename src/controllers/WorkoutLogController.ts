@@ -1,7 +1,4 @@
 import {Request, Response, NextFunction } from 'express';
-import axios, { AxiosResponse } from 'axios';
-import { ReadVResult } from 'fs';
-import {User} from '../models/User'
 import { ExerciseLog } from '../models/ExerciseLog';
 import { ResistanceExerciseLog } from '../models/workout/ResistanceExerciseLog';
 import { CardioExerciseLog } from '../models/workout/CardioExerciseLog';
@@ -17,10 +14,6 @@ import { Exercise } from '../models/workout/Exercise';
 
 
 const getExercises = async (req: Request, res: Response, next: NextFunction) => {
-    
-
-
-
     return res.status(200).json(exercises);
 };
 
@@ -36,7 +29,7 @@ const addExercises = async (req: Request, res: Response, next: NextFunction) => 
 
 const deleteExercise = async (req: Request, res: Response, next: NextFunction) => {
 
-    let id: number = parseInt(req.query.id!.toString());
+    let id = parseInt(req.query.id!.toString());
 
     //simulate deleting exercise
     exercises.splice(id);
@@ -50,7 +43,7 @@ const deleteExercise = async (req: Request, res: Response, next: NextFunction) =
 
 const updateExcercise = async (req: Request, res: Response, next: NextFunction) => {
 
-    let id: number = parseInt(req.query.id!.toString());
+    let id = parseInt(req.query.id!.toString());
     let exercise: ResistanceExerciseLog = req.body.exercise; 
 
     exercises[id] = exercise;

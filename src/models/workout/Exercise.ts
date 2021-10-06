@@ -2,8 +2,8 @@ export class Exercise{
 
     constructor (
         readonly id: number,
-        readonly name: String,
-        readonly category: Number
+        readonly name: string,
+        readonly category: number
     ){}
 
 }

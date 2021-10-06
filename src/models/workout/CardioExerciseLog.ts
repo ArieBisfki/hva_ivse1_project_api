@@ -5,7 +5,7 @@ export class CardioExerciseLog implements ExerciseLog{
 
     constructor(
         readonly exercise: Exercise,
-         readonly duration: Number
+         readonly duration: number
     ){}
 
 }
