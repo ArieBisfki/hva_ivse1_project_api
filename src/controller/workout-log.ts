@@ -1,4 +1,3 @@
-import {Request, Response, NextFunction } from 'express';
 import { ExerciseLog } from '../models/ExerciseLog';
 import { ResistanceExerciseLog } from '../models/workout/ResistanceExerciseLog';
 import { CardioExerciseLog } from '../models/workout/CardioExerciseLog';

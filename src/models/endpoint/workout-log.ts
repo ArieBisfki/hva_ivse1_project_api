@@ -1,7 +1,4 @@
-import { ExerciseLog } from "../ExerciseLog";
 import { RequestHandler } from "express";
-import { GetUserQueryParams } from "./user";
-import { ResistanceExerciseLog } from "../workout/ResistanceExerciseLog";
 import WorkoutLog from "../workout/WorkoutLog";
 
 //Get exercises
