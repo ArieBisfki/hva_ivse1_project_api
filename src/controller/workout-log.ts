@@ -11,7 +11,7 @@ const exercises: ExerciseLog[] = [
     new ResistanceExerciseLog(new Exercise(1,"Benchpress",1),10,4,100),
     new ResistanceExerciseLog(new Exercise(2,"Squat",2),10,4,150),
     new CardioExerciseLog(new Exercise(3,"Running",3),30)
-]; //excercisePersistanceController.getAllExercises
+]; 
 
 const workoutLogs = [new WorkoutLog(1,exercises,new Date())];
 
@@ -21,7 +21,6 @@ const getWorkoutLogs: GetWorkoutLogsRequestHandler = (req, res, next) => {
 
 const addWorkoutLog: AddWorkoutLogRequestHandler = (req, res, next) => {
 
-    //temporary cast to resistanceExerciseLog...
     const workoutLog = req.body;
     
     return res.status(200).json({
@@ -31,7 +30,6 @@ const addWorkoutLog: AddWorkoutLogRequestHandler = (req, res, next) => {
 
 const deleteWorkoutLog: DeleteWorkoutLogRequestHandler = (req, res, next) => {
 
-    //simulate deleting exercise
     workoutLogs.splice(req.params.id);
 
 
@@ -42,7 +40,6 @@ const deleteWorkoutLog: DeleteWorkoutLogRequestHandler = (req, res, next) => {
 
 const updateWorkoutLog: UpdateWorkoutLogRequestHandler =  (req, res, next) => {
 
-    //temporary cast to resistanceExerciseLog...
     const workoutLog = req.body; 
 
     workoutLogs[req.params.id] = workoutLog;
