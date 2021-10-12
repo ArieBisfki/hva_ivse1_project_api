@@ -6,9 +6,9 @@ import { Exercise } from '../models/workout/Exercise';
 
     //A call to the persistance controller
     const exercises: ExerciseLog[] = [
-        new ResistanceExerciseLog(new Exercise("Benchpress",1),10,4,100),
+        /*new ResistanceExerciseLog(new Exercise("Benchpress",1),10,4,100),
         new ResistanceExerciseLog(new Exercise("Squat",2),10,4,150),
-        new CardioExerciseLog(new Exercise("Running",3),30)
+        new CardioExerciseLog(new Exercise("Running",3),30)*/
     ]; //excercisePersistanceController.getAllExercises
 
 
