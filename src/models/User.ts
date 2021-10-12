@@ -1,21 +1,31 @@
+export enum Gender {
+    MALE,
+    FEMALE,
+    OTHER
+}
+
 export class User{
 
 
     constructor(
-        readonly id: Number,
-        readonly username: String, 
-        readonly email: String, 
-        readonly name: String, 
-        readonly bioGender: boolean, 
-        readonly height: Number, 
-        readonly weight: Number, 
+        readonly id: number,
+        readonly username: string,
+        readonly password: string,
+        readonly email: string,
+        readonly firstName: string,
+        readonly lastName: string,
+        readonly prefix: string,
+        readonly profilePicture: string,
+        readonly gender: Gender,
+        readonly height: number,
+        readonly weight: number,
         readonly goal: Goal
     ){}
 
 
 }
 
-enum Goal {
+export enum Goal {
     LOSE_WEIGHT,
     GAIN_WEIGHT,
     REMAIN_SAME,
