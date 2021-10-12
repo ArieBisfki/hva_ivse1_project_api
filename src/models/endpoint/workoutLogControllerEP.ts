@@ -28,5 +28,5 @@ export type DeleteExerciseQueryParams = undefined
 export type UpdateExerciseRequestHandler = RequestHandler<UpdateExerciseRouteParams, UpdateExerciseResBody, UpdateExerciseReqBody, UpdateExerciseQueryParams>;
 export type UpdateExerciseRouteParams = {id: number};
 export type UpdateExerciseReqBody = ExerciseLog;
-export type UpdateExerciseResBody = {message: string, exercise: ResistanceExerciseLog};
+export type UpdateExerciseResBody = {message: string, exercise: ExerciseLog};
 export type UpdateExerciseQueryParams = undefined
