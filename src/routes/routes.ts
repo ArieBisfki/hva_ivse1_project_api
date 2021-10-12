@@ -8,7 +8,7 @@ router.post('/user', UserController.addUser);
 router.get('/user', UserController.getUser);
 
 //exercise endpoints
-router.get('/workout-logs',WorkoutController.getWorkoutLogs);
+router.get('/workout-log',WorkoutController.getWorkoutLogs);
 router.post('/workout-log',WorkoutController.addWorkoutLog);
 router.delete('/workout-log',WorkoutController.deleteWorkoutLog);
 router.put('/workout-log',WorkoutController.updateWorkoutLog);
