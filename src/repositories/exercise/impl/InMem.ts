@@ -1,5 +1,5 @@
 import Interface from "../Interface";
-import Errors from "../Errors";
+import Errors from "../errors";
 import {Exercise} from "../../../models/workout/Exercise";
 
 export default class InMem implements Interface {

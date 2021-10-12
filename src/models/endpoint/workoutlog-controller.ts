@@ -1,6 +1,6 @@
 import { ExerciseLog } from "../ExerciseLog";
 import { RequestHandler } from "express";
-import { GetUserQueryParams } from "./UserControllerEP";
+import { GetUserQueryParams } from "./user-controller";
 import { ResistanceExerciseLog } from "../workout/ResistanceExerciseLog";
 
 //Get exercises

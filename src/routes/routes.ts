@@ -1,6 +1,6 @@
 import express from "express";
-import UserController from '../controllers/UserController';
-import WorkoutController from '../controllers/WorkoutLogController'
+import UserController from '../controllers/controller';
+import WorkoutController from '../controllers/workoutlog'
 const router = express.Router();
 
 //user endpoints

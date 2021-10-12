@@ -3,7 +3,7 @@ import { ExerciseLog } from '../models/ExerciseLog';
 import { ResistanceExerciseLog } from '../models/workout/ResistanceExerciseLog';
 import { CardioExerciseLog } from '../models/workout/CardioExerciseLog';
 import { Exercise } from '../models/workout/Exercise';
-import { GetExercisesRequestHandler, AddExerciseRequestHandler, DeleteExerciseRequestHandler, UpdateExerciseRequestHandler } from '../models/endpoint/workoutLogControllerEP';
+import { GetExercisesRequestHandler, AddExerciseRequestHandler, DeleteExerciseRequestHandler, UpdateExerciseRequestHandler } from '../models/endpoint/workoutlog-controller';
 
     //A call to the persistance controller
 const exercises: ExerciseLog[] = [
