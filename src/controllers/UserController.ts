@@ -1,5 +1,5 @@
 import {Gender, Goal, User} from '../models/User'
-import {AddUserRequestHandler, GetUserRequestHandler} from "../models/endpoint/userController";
+import {AddUserRequestHandler, GetUserRequestHandler} from "../models/endpoint/UserControllerEP";
 
 const getUser: GetUserRequestHandler = async (req, res, next) => {
     let id = req.params.id;

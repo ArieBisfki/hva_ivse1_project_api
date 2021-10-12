@@ -3,54 +3,52 @@ import { ExerciseLog } from '../models/ExerciseLog';
 import { ResistanceExerciseLog } from '../models/workout/ResistanceExerciseLog';
 import { CardioExerciseLog } from '../models/workout/CardioExerciseLog';
 import { Exercise } from '../models/workout/Exercise';
+import { GetExercisesRequestHandler, AddExerciseRequestHandler, DeleteExerciseRequestHandler, UpdateExerciseRequestHandler } from '../models/endpoint/workoutLogControllerEP';
 
     //A call to the persistance controller
     const exercises: ExerciseLog[] = [
-        new ResistanceExerciseLog(new Exercise("Benchpress",1),10,4,100),
-        new ResistanceExerciseLog(new Exercise("Squat",2),10,4,150),
-        new CardioExerciseLog(new Exercise("Running",3),30)
+        new ResistanceExerciseLog(new Exercise(1,"Benchpress",1),10,4,100),
+        new ResistanceExerciseLog(new Exercise(2,"Squat",2),10,4,150),
+        new CardioExerciseLog(new Exercise(3,"Running",3),30)
     ]; //excercisePersistanceController.getAllExercises
 
 
 
-const getExercises = async (req: Request, res: Response, next: NextFunction) => {
+const getExercises: GetExercisesRequestHandler = (req, res, next) => {
     return res.status(200).json(exercises);
 };
 
-const addExercises = async (req: Request, res: Response, next: NextFunction) => {
+const addExercises : AddExerciseRequestHandler = (req, res, next) => {
 
-    let exercise: ResistanceExerciseLog = req.body;
+    //temporary cast to resistanceExerciseLog...
+    let exercise: ResistanceExerciseLog =  req.body as ResistanceExerciseLog;
     
     return res.status(200).json({
-        message: "User is saved successfully!",
-        Excercise: exercise 
+        message: exercise 
     });
 }
 
-const deleteExercise = async (req: Request, res: Response, next: NextFunction) => {
-
-    let id = parseInt(req.query.id!.toString());
+const deleteExercise : DeleteExerciseRequestHandler = (req, res, next) => {
 
     //simulate deleting exercise
-    exercises.splice(id);
+    exercises.splice(req.params.id);
 
 
     return res.status(200).json({
-        message: "Exercise successfully deleted!",
-        Exercises: exercises
+        message: "Exercise successfully deleted!"
     })
 }
 
-const updateExcercise = async (req: Request, res: Response, next: NextFunction) => {
+const updateExcercise : UpdateExerciseRequestHandler =  (req, res, next) => {
 
-    let id = parseInt(req.query.id!.toString());
-    let exercise: ResistanceExerciseLog = req.body.exercise; 
+    //temporary cast to resistanceExerciseLog...
+    let exercise: ResistanceExerciseLog = req.body as ResistanceExerciseLog; 
 
-    exercises[id] = exercise;
+    exercises[req.params.id] = exercise;
 
     return res.status(200).json({
         message: "Successfully updated exercise!",
-        Exercise: exercises
+        exercise: exercise
     });
 }
 
