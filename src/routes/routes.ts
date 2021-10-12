@@ -1,6 +1,6 @@
 import express from "express";
-import UserController from '../controllers/controller';
-import WorkoutController from '../controllers/workoutlog'
+import UserController from '../controller/user';
+import WorkoutController from '../controller/workout-log'
 const router = express.Router();
 
 //user endpoints
@@ -8,10 +8,10 @@ router.post('/user', UserController.addUser);
 router.get('/user', UserController.getUser);
 
 //exercise endpoints
-router.get('/exercises',WorkoutController.getExercises);
-router.post('/exercise',WorkoutController.addExercises);
-router.delete('/exercise',WorkoutController.deleteExercise);
-router.put('/exercise',WorkoutController.updateExcercise);
+router.get('/workoutLogs',WorkoutController.getWorkoutLogs);
+router.post('/workoutLog',WorkoutController.addWorkoutLog);
+router.delete('/workoutLog',WorkoutController.deleteWorkoutLog);
+router.put('/workoutLog',WorkoutController.updateWorkoutLog);
 
 
 export = router;

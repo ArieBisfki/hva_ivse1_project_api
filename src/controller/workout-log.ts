@@ -3,7 +3,8 @@ import { ExerciseLog } from '../models/ExerciseLog';
 import { ResistanceExerciseLog } from '../models/workout/ResistanceExerciseLog';
 import { CardioExerciseLog } from '../models/workout/CardioExerciseLog';
 import { Exercise } from '../models/workout/Exercise';
-import { GetExercisesRequestHandler, AddExerciseRequestHandler, DeleteExerciseRequestHandler, UpdateExerciseRequestHandler } from '../models/endpoint/workoutlog-controller';
+import { GetWorkoutLogsRequestHandler, AddWorkoutLogRequestHandler, DeleteWorkoutLogRequestHandler, UpdateWorkoutLogRequestHandler } from '../models/endpoint/workout-log';
+import WorkoutLog from '../models/workout/WorkoutLog';
 
     //A call to the persistance controller
 const exercises: ExerciseLog[] = [
@@ -12,43 +13,45 @@ const exercises: ExerciseLog[] = [
     new CardioExerciseLog(new Exercise(3,"Running",3),30)
 ]; //excercisePersistanceController.getAllExercises
 
-const getExercises: GetExercisesRequestHandler = (req, res, next) => {
-    return res.status(200).json(exercises);
+const workoutLogs = [new WorkoutLog(1,exercises,new Date())];
+
+const getWorkoutLogs: GetWorkoutLogsRequestHandler = (req, res, next) => {
+    return res.status(200).json(workoutLogs);
 };
 
-const addExercises: AddExerciseRequestHandler = (req, res, next) => {
+const addWorkoutLog: AddWorkoutLogRequestHandler = (req, res, next) => {
 
     //temporary cast to resistanceExerciseLog...
-    const exercise = req.body;
+    const workoutLog = req.body;
     
     return res.status(200).json({
-        message: exercise 
+        message: workoutLog 
     });
 }
 
-const deleteExercise: DeleteExerciseRequestHandler = (req, res, next) => {
+const deleteWorkoutLog: DeleteWorkoutLogRequestHandler = (req, res, next) => {
 
     //simulate deleting exercise
-    exercises.splice(req.params.id);
+    workoutLogs.splice(req.params.id);
 
 
     return res.status(200).json({
-        message: "Exercise successfully deleted!"
+        message: "WorkoutLog successfully deleted!"
     })
 }
 
-const updateExcercise: UpdateExerciseRequestHandler =  (req, res, next) => {
+const updateWorkoutLog: UpdateWorkoutLogRequestHandler =  (req, res, next) => {
 
     //temporary cast to resistanceExerciseLog...
-    const exercise = req.body; 
+    const workoutLog = req.body; 
 
-    exercises[req.params.id] = exercise;
+    workoutLogs[req.params.id] = workoutLog;
 
     return res.status(200).json({
         message: "Successfully updated exercise!",
-        exercise
+        workoutLog
     });
 }
 
-export default { getExercises, addExercises, deleteExercise, updateExcercise};
+export default { getWorkoutLogs, addWorkoutLog, deleteWorkoutLog, updateWorkoutLog};
 
