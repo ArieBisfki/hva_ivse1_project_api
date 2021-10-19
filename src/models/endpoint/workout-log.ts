@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import WorkoutLog from "../workout/WorkoutLog";
 
-//Get exercises
+//Get workoutlogs
 export type GetWorkoutLogsRequestHandler = RequestHandler<GetWorkoutLogsRouteParams, GetWorkoutLogsResBody, GetWorkoutLogsReqBody, GetWorkoutLogsQueryParams>;
 export type GetWorkoutLogsRouteParams = undefined;
 export type GetWorkoutLogsReqBody = undefined;
