@@ -1,5 +1,7 @@
 import {Gender, Goal, User} from '../models/User'
 import {AddUserRequestHandler, GetUserRequestHandler} from "../models/endpoint/user";
+import { container } from 'tsyringe';
+import { DI_TOKEN } from '../di/Registry';
 
 const getUser: GetUserRequestHandler = async (req, res, next) => {
     let id = req.params.id;
@@ -24,6 +26,7 @@ const getUser: GetUserRequestHandler = async (req, res, next) => {
         message: user
     });
 };
+
 
 const addUser: AddUserRequestHandler = (req, res, next) => {
 
