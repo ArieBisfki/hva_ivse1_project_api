@@ -1,21 +1,13 @@
 export class Success<S = unknown> {
-    readonly result: Readonly<S>;
-
     constructor(
-        result: S
-    ) {
-        this.result = result;
-    }
+        readonly result: S
+    ) {}
 }
 
 export class Fail<F = unknown> {
-    readonly errors: Readonly<F>;
-
     constructor(
-        errors: F
-    ) {
-        this.errors = errors;
-    }
+        readonly error: F
+    ) {}
 }
 
 export type Result<S, F> =

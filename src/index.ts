@@ -1,16 +1,9 @@
+import "reflect-metadata";
 import http from 'http';
 import morgan from 'morgan';
 import express, {Express} from 'express';
 import routes from './routes/routes';
-import "reflect-metadata";
 import "./augmentations/tsyringe";
-import DIRegistry, {DI_TOKEN} from "./di/Registry";
-
-import {container} from "tsyringe";
-
-const exerciseRepository = container.resolve(DI_TOKEN.ExerciseRepository);
-const workoutLogRepository = container.resolve(DI_TOKEN.WorkoutLogRepository);
-console.log({exerciseRepository, workoutLogRepository});
 
 const router: Express = express();
 

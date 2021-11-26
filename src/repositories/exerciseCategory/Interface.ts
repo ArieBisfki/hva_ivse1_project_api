@@ -1,8 +1,13 @@
-import { ExerciseCategory } from "../../models/workout/ExerciseCategory";
+import {Result} from "../../utils/failOrSuccess";
+import ExerciseCategoryRepositoryError from "./Error";
+import {ExerciseCategory} from "../../models/workout/ExerciseCategory";
 
-export default interface Interface {
-    create(exerciseCategory: ExerciseCategory): Promise<ExerciseCategory>;
-    delete(id: number): Promise<void>;
-    update(exerciseCategory: ExerciseCategory): Promise<ExerciseCategory>;
-    get(id: number): Promise<ExerciseCategory>;
+type E = typeof ExerciseCategoryRepositoryError;
+type P<T> = Promise<T>;
+type R<S, F> = Result<S, F>;
+
+export default interface IExerciseCategoryRepository {
+    create(exerciseCategory: ExerciseCategory): P<R<ExerciseCategory, E["DUPLICATE"]>>;
+    update(exerciseCategory: ExerciseCategory): P<R<ExerciseCategory, E["NOT_FOUND"]>>;
+    delete(id: number): P<R<void, E["NOT_FOUND"]>>;
 }

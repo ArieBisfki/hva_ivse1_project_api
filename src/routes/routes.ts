@@ -2,7 +2,7 @@ import express from "express";
 import UserController from '../controller/user';
 import WorkoutLog from '../controller/workout-log';
 import Exercise from '../controller/exercise';
-import ExerciseCategory from '../controller/category';
+import ExerciseCategory from '../controller/exercise-category';
 
 const router = express.Router();
 
@@ -23,9 +23,8 @@ router.delete('/exercise', Exercise.deleteExercise);
 router.put('/exercise', WorkoutLog.updateWorkoutLog);
 
 //exercise-log endpoints
-router.get('/exercise-log',ExerciseCategory.getExerciseCategories);
-router.post('/exercise-log',ExerciseCategory.addExerciseCategory);
-router.delete('/exercise-log',ExerciseCategory.updateExerciseCategory);
-router.put('/exercise-log',ExerciseCategory.deleteExerciseCategory);
+router.post('/exercise/category',ExerciseCategory.addExerciseCategory);
+router.delete('/exercise/category',ExerciseCategory.updateExerciseCategory);
+router.put('/exercise/category',ExerciseCategory.deleteExerciseCategory);
 
-export = router;
+export default router;
