@@ -1,8 +1,14 @@
 import WorkoutLog from "../../models/workout/WorkoutLog";
+import {Result} from "../../utils/failOrSuccess";
+import WorkoutLogRepositoryError from "./Error";
 
-export default interface Interface {
-    create(workoutLog: WorkoutLog): Promise<WorkoutLog>;
-    delete(id: number): Promise<void>;
-    update(workoutLog: WorkoutLog): Promise<WorkoutLog>;
-    get(id: number): Promise<WorkoutLog>;
+type E = typeof WorkoutLogRepositoryError;
+type P<T> = Promise<T>;
+type R<S, F> = Result<S, F>;
+
+export default interface IWorkoutLogRepository {
+    create(workoutLog: WorkoutLog): P<R<WorkoutLog, E["DUPLICATE"]>>;
+    get(userId: number): P<R<WorkoutLog[], E["NOT_FOUND"]>>;
+    update(workoutLog: WorkoutLog): P<R<WorkoutLog, E["NOT_FOUND"]>>;
+    delete(id: number): P<R<void, E["NOT_FOUND"]>>;
 }

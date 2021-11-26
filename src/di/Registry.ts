@@ -1,11 +1,11 @@
 import {registry} from "tsyringe";
 import ExerciseRepository from "../repositories/exercise/Interface";
 import WorkoutLogRepository from "../repositories/workoutLog/Interface";
-import ExerciseRepositoryInMem from "../repositories/exercise/impl/InMem";
+import ExerciseRepositoryInMem from "../repositories/exercise/InMem";
 import objectFromTuple from "../utils/objectFromTuple";
-import WorkoutLogRepositoryInMem from "../repositories/workoutLog/impl/InMem";
+import WorkoutLogRepositoryInMem from "../repositories/workoutLog/InMem";
 import ExerciseCategoryRepository from "../repositories/exerciseCategory/Interface";
-import ExerciseCategoryRepositoryInMem from "../repositories/exerciseCategory/impl/InMem";
+import ExerciseCategoryRepositoryInMem from "../repositories/exerciseCategory/InMem";
 
 export const DI_TOKEN = Object.freeze(objectFromTuple(["ExerciseRepository", "WorkoutLogRepository", "ExerciseCategoryRepository"] as const));
 
