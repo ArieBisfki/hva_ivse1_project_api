@@ -1,7 +1,7 @@
 import {AddExerciseCategoryRequestHandler, DeleteExerciseCategoryRequestHandler, UpdateExerciseCategoryRequestHandler} from "../models/endpoint/ExerciseCategory";
 import { container } from "tsyringe";
 import { DI_TOKEN } from "../di/Registry";
-import {resultIsFail} from "../utils/failOrSuccess";
+import {resultIsFail} from "../utils/FailOrSuccess";
 import {constants} from "http2";
 
 const exerciseCategoryRepository = container.resolve(DI_TOKEN.ExerciseCategoryRepository);

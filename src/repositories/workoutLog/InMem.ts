@@ -1,4 +1,4 @@
-import {exec, Result} from "../../utils/failOrSuccess";
+import {exec, Result} from "../../utils/FailOrSuccess";
 import WorkoutLog from "../../models/workout/WorkoutLog";
 import IWorkoutLogRepository from "./Interface";
 import WorkoutLogRepositoryError  from "./Error";

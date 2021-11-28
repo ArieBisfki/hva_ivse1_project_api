@@ -1,12 +1,17 @@
 import "reflect-metadata";
 import http from 'http';
 import morgan from 'morgan';
-import express, {Express} from 'express';
+import express from 'express';
 import routes from './routes/routes';
 import "./augmentations/tsyringe";
+import dotenv from "dotenv";
+import * as path from "path";
 
-const router: Express = express();
+dotenv.config({
+    path: path.resolve(__dirname, ".env")
+});
 
+const router = express();
 router.use(morgan('dev'));
 
 router.use(express.urlencoded({ extended: false }));

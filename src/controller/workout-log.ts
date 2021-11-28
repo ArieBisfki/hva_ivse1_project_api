@@ -1,11 +1,7 @@
-import { ResistanceExerciseLog } from '../models/workout/ResistanceExerciseLog';
-import { CardioExerciseLog } from '../models/workout/CardioExerciseLog';
-import { Exercise } from '../models/workout/Exercise';
 import { GetWorkoutLogsRequestHandler, AddWorkoutLogRequestHandler, DeleteWorkoutLogRequestHandler, UpdateWorkoutLogRequestHandler } from '../models/endpoint/workout-log';
-import WorkoutLog from '../models/workout/WorkoutLog';
 import { container } from 'tsyringe';
 import { DI_TOKEN } from '../di/Registry';
-import {resultIsFail} from "../utils/failOrSuccess";
+import {resultIsFail} from "../utils/FailOrSuccess";
 import {constants} from "http2";
 
 const workoutLogRepository = container.resolve(DI_TOKEN.WorkoutLogRepository);

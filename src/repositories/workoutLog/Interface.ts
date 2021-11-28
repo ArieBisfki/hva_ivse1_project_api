@@ -1,5 +1,5 @@
 import WorkoutLog from "../../models/workout/WorkoutLog";
-import {Result} from "../../utils/failOrSuccess";
+import {Result} from "../../utils/FailOrSuccess";
 import WorkoutLogRepositoryError from "./Error";
 
 type E = typeof WorkoutLogRepositoryError;

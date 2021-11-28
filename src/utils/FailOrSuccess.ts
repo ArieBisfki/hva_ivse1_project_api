@@ -17,7 +17,7 @@ export function resultIsFail(arg: Result<any, any>): arg is Fail {
     return arg instanceof Fail;
 }
 
-export function exec<S, F>(
+export function exec<S = void, F = void>(
     cb: (
         resolve: (value: S) => void,
         err: (err: F) => void

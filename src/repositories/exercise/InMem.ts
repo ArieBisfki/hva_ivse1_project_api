@@ -1,5 +1,5 @@
 import {Exercise} from "../../models/workout/Exercise";
-import {exec, Result} from "../../utils/failOrSuccess";
+import {exec, Result} from "../../utils/FailOrSuccess";
 import IExerciseRepository from "./Interface";
 import ExerciseRepositoryError from "./Error";
 import {exerciseCategories} from "../exerciseCategory/InMem";

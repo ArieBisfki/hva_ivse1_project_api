@@ -2,7 +2,7 @@ import { container } from "tsyringe";
 import { DI_TOKEN } from "../di/Registry";
 import { AddExerciseRequestHandler, DeleteExerciseRequestHandler, GetExercisesRequestHandler, UpdateExerciseRequestHandler } from "../models/endpoint/exercise";
 import {constants} from "http2";
-import {resultIsFail} from "../utils/failOrSuccess";
+import {resultIsFail} from "../utils/FailOrSuccess";
 
 const exerciseRepository = container.resolve(DI_TOKEN.ExerciseRepository);
 

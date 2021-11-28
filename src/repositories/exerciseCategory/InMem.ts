@@ -1,4 +1,4 @@
-import {exec, Result} from "../../utils/failOrSuccess";
+import {exec, Result} from "../../utils/FailOrSuccess";
 import ExerciseCategoryRepositoryError  from "./Error";
 import IExerciseCategoryRepository from "./Interface";
 import {ExerciseCategory} from "../../models/workout/ExerciseCategory";
