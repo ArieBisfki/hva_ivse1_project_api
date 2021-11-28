@@ -1,6 +1,6 @@
 import WorkoutLog from "../../models/workout/WorkoutLog";
 import {Result} from "../../utils/FailOrSuccess";
-import WorkoutLogRepositoryError from "./Error";
+import WorkoutLogRepositoryError from "./WorkoutLogRepositoryError";
 
 type E = typeof WorkoutLogRepositoryError;
 type P<T> = Promise<T>;

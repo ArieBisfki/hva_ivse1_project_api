@@ -1,10 +1,10 @@
 import {exec, Result} from "../../utils/FailOrSuccess";
 import WorkoutLog from "../../models/workout/WorkoutLog";
-import IWorkoutLogRepository from "./Interface";
-import WorkoutLogRepositoryError  from "./Error";
+import IWorkoutLogRepository from "./IWorkoutLogRepository";
+import WorkoutLogRepositoryError  from "./WorkoutLogRepositoryError";
 import {ResistanceExerciseLog} from "../../models/workout/ResistanceExerciseLog";
 import {CardioExerciseLog} from "../../models/workout/CardioExerciseLog";
-import {exercises} from "../exercise/InMem";
+import {exercises} from "../exercise/ExerciseRepositoryInMem";
 
 const E = WorkoutLogRepositoryError;
 type E = typeof E;

@@ -1,6 +1,6 @@
 import {exec, Result} from "../../utils/FailOrSuccess";
-import ExerciseCategoryRepositoryError  from "./Error";
-import IExerciseCategoryRepository from "./Interface";
+import ExerciseCategoryRepositoryError  from "./ExerciseCategoryRepositoryError";
+import IExerciseCategoryRepository from "./IExerciseCategoryRepository";
 import {ExerciseCategory} from "../../models/workout/ExerciseCategory";
 
 const E = ExerciseCategoryRepositoryError;

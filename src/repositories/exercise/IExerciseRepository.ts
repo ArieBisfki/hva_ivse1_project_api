@@ -1,6 +1,6 @@
 import {Exercise} from "../../models/workout/Exercise";
 import {Result} from "../../utils/FailOrSuccess";
-import ExerciseRepositoryError from "./Error";
+import ExerciseRepositoryError from "./ExerciseRepositoryError";
 
 type E = typeof ExerciseRepositoryError
 type P<T> = Promise<T>;

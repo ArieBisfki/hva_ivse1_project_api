@@ -1,8 +1,8 @@
 import {Exercise} from "../../models/workout/Exercise";
 import {exec, Result} from "../../utils/FailOrSuccess";
-import IExerciseRepository from "./Interface";
-import ExerciseRepositoryError from "./Error";
-import {exerciseCategories} from "../exerciseCategory/InMem";
+import IExerciseRepository from "./IExerciseRepository";
+import ExerciseRepositoryError from "./ExerciseRepositoryError";
+import {exerciseCategories} from "../exerciseCategory/ExerciseCategoryRepositoryInMem";
 
 const E = ExerciseRepositoryError;
 type E = typeof E;

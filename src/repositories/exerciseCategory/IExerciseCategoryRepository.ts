@@ -1,5 +1,5 @@
 import {Result} from "../../utils/FailOrSuccess";
-import ExerciseCategoryRepositoryError from "./Error";
+import ExerciseCategoryRepositoryError from "./ExerciseCategoryRepositoryError";
 import {ExerciseCategory} from "../../models/workout/ExerciseCategory";
 
 type E = typeof ExerciseCategoryRepositoryError;

@@ -1,11 +1,11 @@
 import {registry} from "tsyringe";
-import ExerciseRepository from "../repositories/exercise/Interface";
-import WorkoutLogRepository from "../repositories/workoutLog/Interface";
-import ExerciseRepositoryInMem from "../repositories/exercise/InMem";
+import ExerciseRepository from "../repositories/exercise/IExerciseRepository";
+import WorkoutLogRepository from "../repositories/workoutLog/IWorkoutLogRepository";
+import ExerciseRepositoryInMem from "../repositories/exercise/ExerciseRepositoryInMem";
 import objectFromTuple from "../utils/objectFromTuple";
-import WorkoutLogRepositoryInMem from "../repositories/workoutLog/InMem";
-import ExerciseCategoryRepository from "../repositories/exerciseCategory/Interface";
-import ExerciseCategoryRepositoryInMem from "../repositories/exerciseCategory/InMem";
+import WorkoutLogRepositoryInMem from "../repositories/workoutLog/WorkoutLogRepositoryInMem";
+import ExerciseCategoryRepository from "../repositories/exerciseCategory/IExerciseCategoryRepository";
+import ExerciseCategoryRepositoryInMem from "../repositories/exerciseCategory/ExerciseCategoryRepositoryInMem";
 import AbstractAuthTokenService from "../auth/AbstractAuthTokenService";
 import {AuthTokenService} from "../auth/AuthTokenService";
 
