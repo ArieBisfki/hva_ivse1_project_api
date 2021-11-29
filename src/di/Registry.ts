@@ -16,7 +16,7 @@ export const DI_TOKEN = Object.freeze(objectFromTuple(["ExerciseRepository", "Wo
 export type DITokenProviderMap = {
     ExerciseRepository: ExerciseRepository,
     WorkoutLogRepository: WorkoutLogRepository,
-    ExerciseCategoryRepository: ExerciseCategoryRepository
+    ExerciseCategoryRepository: ExerciseCategoryRepository,
 };
 
 @registry([
