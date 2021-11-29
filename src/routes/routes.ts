@@ -9,6 +9,8 @@ const router = express.Router();
 //user endpoints
 router.post('/user', UserController.addUser);
 router.get('/user', UserController.getUser);
+router.get('/login', UserController.authenticateToken, UserController.loginUser);
+router.get('/register', UserController.registerUser);
 
 //workout-log endpoints
 router.get('/workout-log', WorkoutLog.getWorkoutLogs);

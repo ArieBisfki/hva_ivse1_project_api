@@ -1,0 +1,6 @@
+projectKey=IVSE1-Automated-Software-Validation
+serverUrl=http://localhost:9000
+serverVersion=9.1.0.47736
+dashboardUrl=http://localhost:9000/dashboard?id=IVSE1-Automated-Software-Validation
+ceTaskId=AX0ydnC_1s_VDaEMU6fr
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AX0ydnC_1s_VDaEMU6fr
