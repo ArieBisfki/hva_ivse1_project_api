@@ -9,7 +9,7 @@ const E = ExerciseCategoryRepositoryError;
 type E = typeof E;
 type R<S, F> = Result<S, F>;
 
-export const exerciseCategories = (() => {
+export const exerciseCategoriesInit = (() => {
     const PUSH = "Push";
     const LOWER_BODY = "Lower Body";
     const CARDIO = "Cardio";
@@ -22,7 +22,7 @@ export const exerciseCategories = (() => {
 })();
 
 export default class ExerciseCategoryRepositoryInMem implements IExerciseCategoryRepository {
-    private readonly exerciseCategories: ExerciseCategory[] = Object.values(exerciseCategories);
+    private readonly exerciseCategories = Object.values(exerciseCategoriesInit);
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
     create(exerciseCategory: ExerciseCategory): Promise<R<ExerciseCategory, E["DUPLICATE"]>> {

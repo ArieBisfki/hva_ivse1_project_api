@@ -1,18 +1,10 @@
-import User, {Gender, Goal} from '../models/User'
 import {AddUserRequestHandler, GetUserRequestHandler} from "../models/endpoint/user";
+import * as users from "../data/users.json";
 
 const getUser: GetUserRequestHandler = async (req, res, next) => {
     let id = req.params.id;
 
-    let user: User = {
-        id: 3,
-        email: "arie_bisfki@live.nl",
-        password: "Yeetyeet1!",
-        firstName: "Arie",
-        lastName: "Bisfki",
-        username: "arie_yeet",
-        prefix: ""
-    };
+    const user = users.Arie;
     console.log("testtses:   " + req.params);
 
     return res.status(200).json({

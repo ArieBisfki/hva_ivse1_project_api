@@ -4,36 +4,30 @@ import IWorkoutLogRepository from "./IWorkoutLogRepository";
 import WorkoutLogRepositoryError  from "./WorkoutLogRepositoryError";
 import {ResistanceExerciseLog} from "../../models/workout/ResistanceExerciseLog";
 import {CardioExerciseLog} from "../../models/workout/CardioExerciseLog";
-import {exercises} from "../exercise/ExerciseRepositoryInMem";
+import {exercisesInit} from "../exercise/ExerciseRepositoryInMem";
 import {container} from "tsyringe";
 import {DI_TOKEN} from "../../di/Registry";
+import * as users from "../../data/users.json";
 
 const E = WorkoutLogRepositoryError;
 type E = typeof E;
 type R<S, F> = Result<S, F>;
 
-export const workoutLogs: WorkoutLog[] = [
+export const workoutLogsInit: WorkoutLog[] = [
     {
         id: 1,
         exerciseLogs: [
-            new ResistanceExerciseLog(exercises["Bench Press"],10,4,100),
-            new ResistanceExerciseLog(exercises.Squat,10,4,150),
-            new CardioExerciseLog(exercises.Running,30)
+            new ResistanceExerciseLog(exercisesInit["Bench Press"],10,4,100),
+            new ResistanceExerciseLog(exercisesInit.Squat,10,4,150),
+            new CardioExerciseLog(exercisesInit.Running,30)
         ],
         date: new Date(),
-        user: {
-            id: 0,
-            username: "ariebisfki",
-            firstName: "Arie",
-            lastName: "Bisfki",
-            password: "bibooo",
-            email: "arie_bisfki@live.nl"
-        }
+        user: users.Arie
     }
 ];
 
 export default class WorkoutLogRepositoryInMem implements IWorkoutLogRepository {
-    private readonly workoutLogs: WorkoutLog[] = workoutLogs;
+    private readonly workoutLogs: WorkoutLog[] = workoutLogsInit;
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
     create(workoutLog: WorkoutLog): Promise<R<WorkoutLog, E["DUPLICATE"]>> {
