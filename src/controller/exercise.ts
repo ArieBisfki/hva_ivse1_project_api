@@ -7,14 +7,14 @@ import {resultIsFail} from "../utils/FailOrSuccess";
 const exerciseRepository = container.resolve(DI_TOKEN.ExerciseRepository);
 
 const getExercises: GetExercisesRequestHandler = async (req, res, next) => {
-    const getResult = await exerciseRepository.get(0);
+    const exercises = await exerciseRepository.get(0);
 
-    if (resultIsFail(getResult)) {
+    if (!exercises) {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     } else {
         res.status(constants.HTTP_STATUS_OK)
             .json({
-                exercises: getResult.result
+                exercises
             })
             .send();
     }
@@ -37,13 +37,13 @@ const addExercise: AddExerciseRequestHandler = async (req, res, next) => {
 }
 
 const deleteExercise: DeleteExerciseRequestHandler = async (req, res, next) => {
+    const wasDeleted = await exerciseRepository.delete(req.params.id);
 
-    const deleteResult = await exerciseRepository.delete(req.params.id);
-    if (resultIsFail(deleteResult)) {
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
-    } else {
-        res.status(constants.HTTP_STATUS_OK).send();
-    }
+    const status = wasDeleted
+        ? constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
+        : constants.HTTP_STATUS_OK;
+
+    res.status(status).send();
 }
 
 const updateExercise: UpdateExerciseRequestHandler = async (req, res, next) => {

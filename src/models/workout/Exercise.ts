@@ -1,9 +1,9 @@
 import {ExerciseCategory} from "./ExerciseCategory";
+import User from "../User";
 
-export class Exercise{
-    constructor (
-        readonly id: number,
-        readonly name: string,
-        readonly category: ExerciseCategory
-    ){}
+export interface Exercise{
+    readonly id: number,
+    readonly name: string,
+    readonly category: ExerciseCategory,
+    readonly user: User
 }

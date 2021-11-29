@@ -8,7 +8,7 @@ type R<S, F> = Result<S, F>;
 
 export default interface IExerciseRepository {
     create(exercise: Exercise): P<R<Exercise, E["DUPLICATE"]>>;
-    get(userId: number): P<R<Exercise[], E["NOT_FOUND"]>>;
+    get(userId: number): P<Exercise[] | undefined>;
     update(exercise: Exercise): P<R<Exercise, E["NOT_FOUND"]>>;
-    delete(id: number): P<R<void, E["NOT_FOUND"]>>
+    delete(id: number): P<boolean>
 }

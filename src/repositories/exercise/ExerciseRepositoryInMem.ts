@@ -3,6 +3,9 @@ import {exec, Result} from "../../utils/FailOrSuccess";
 import IExerciseRepository from "./IExerciseRepository";
 import ExerciseRepositoryError from "./ExerciseRepositoryError";
 import {exerciseCategories} from "../exerciseCategory/ExerciseCategoryRepositoryInMem";
+import User, {Gender, Goal} from "../../models/User";
+import {container} from "tsyringe";
+import {DI_TOKEN} from "../../di/Registry";
 
 const E = ExerciseRepositoryError;
 type E = typeof E;
@@ -13,55 +16,77 @@ export const exercises = (() => {
     const SQUAT = "Squat";
     const RUNNING = "Running";
 
+    const user: User = {
+        id: 3,
+        email: "arie_bisfki@live.nl",
+        password: "Yeetyeet1!",
+        firstName: "Arie",
+        lastName: "Bisfki",
+        username: "arie_yeet",
+        prefix: ""
+    };
+
+    const benchPressExercise: Exercise = {
+        id: 1,
+        name: BENCH_PRESS,
+        category: exerciseCategories.Push,
+        user
+    };
+
+    const squatExercise: Exercise = {
+        id: 2,
+        name: SQUAT,
+        category: exerciseCategories["Lower Body"],
+        user
+    };
+
+    const runningExercise: Exercise = {
+        id: 3,
+        name: RUNNING,
+        category: exerciseCategories.Cardio,
+        user
+    };
+
     return {
-        [BENCH_PRESS]: new Exercise(1, BENCH_PRESS, exerciseCategories.Push),
-        [SQUAT]: new Exercise(2, SQUAT, exerciseCategories["Lower Body"]),
-        [RUNNING]: new Exercise(3, RUNNING,exerciseCategories.Cardio)
+        [BENCH_PRESS]: benchPressExercise,
+        [SQUAT]: squatExercise,
+        [RUNNING]: runningExercise
     };
 })();
 
 export default class ExerciseRepositoryInMem implements IExerciseRepository {
-    private exercises: Exercise[] = Object.values(exercises);
+    private readonly exercises: Exercise[] = Object.values(exercises);
+    private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
     async create(exercise: Exercise): Promise<R<Exercise, E["DUPLICATE"]>> {
-        return exec((resolve, err) => {
-            const existingExercise = this.exercises.find(w => w.id === exercise.id);
-            if (existingExercise) {
-                return err(E.DUPLICATE);
-            }
-
-            this.exercises.push(exercise);
-
-            resolve(exercise);
+        return this.crudUtil.create({
+            models: this.exercises,
+            toCreate: exercise,
+            equalityBy: "id",
+            duplicateError: E.DUPLICATE
         });
     }
 
-    async get(userId: number): Promise<R<Exercise[], E["NOT_FOUND"]>> {
-        return exec((resolve, err) => {
-            resolve(this.exercises);
+    async get(userId: number): Promise<Exercise[] | undefined> {
+        return this.crudUtil.filter({
+            models: this.exercises,
+            filterBy: exercise => exercise.user.id === userId
         });
     }
 
     async update(exercise: Exercise): Promise<R<Exercise, E["NOT_FOUND"]>> {
-        return exec((resolve, err) => {
-            const existingExerciseIndex = this.exercises.findIndex(e => e.id === exercise.id);
-            if (existingExerciseIndex === -1) {
-                return err(E.NOT_FOUND);
-            }
-            this.exercises[existingExerciseIndex] = exercise;
-            resolve(exercise);
-        });
+        return this.crudUtil.update({
+            models: this.exercises,
+            toUpdate: exercise,
+            equalityBy: "id",
+            notFoundError: E.NOT_FOUND
+        })
     }
 
-    async delete(id: number): Promise<R<void, E["NOT_FOUND"]>> {
-        return exec((resolve, err) => {
-            const sizeBefore = this.exercises.length;
-            this.exercises = this.exercises.filter(exercise => exercise.id === id);
-            const sizeAfter = this.exercises.length;
-            if (sizeBefore === sizeAfter) {
-                err(E.NOT_FOUND);
-            }
-            resolve();
+    async delete(id: number): Promise<boolean> {
+        return this.crudUtil.delete({
+            models: this.exercises,
+            filterBy: ["id", id]
         });
     }
 }

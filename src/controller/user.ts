@@ -1,4 +1,4 @@
-import {Gender, Goal, User} from '../models/User'
+import User, {Gender, Goal} from '../models/User'
 import {AddUserRequestHandler, GetUserRequestHandler} from "../models/endpoint/user";
 
 const getUser: GetUserRequestHandler = async (req, res, next) => {
@@ -6,16 +6,11 @@ const getUser: GetUserRequestHandler = async (req, res, next) => {
 
     let user: User = {
         id: 3,
-        gender: Gender.MALE,
-        goal: Goal.LOSE_WEIGHT,
         email: "arie_bisfki@live.nl",
         password: "Yeetyeet1!",
-        profilePicture: "Screenshot_20190628-131408_YouTube.jpg",
         firstName: "Arie",
         lastName: "Bisfki",
         username: "arie_yeet",
-        height: 180,
-        weight: 76,
         prefix: ""
     };
     console.log("testtses:   " + req.params);
