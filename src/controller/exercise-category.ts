@@ -20,13 +20,13 @@ const addExerciseCategory: AddExerciseCategoryRequestHandler = async (req, res, 
 }
 
 const deleteExerciseCategory: DeleteExerciseCategoryRequestHandler = async (req, res, next) => {
-    const deleteResult = await exerciseCategoryRepository.delete(req.params.id);
+    const wasDeleted = await exerciseCategoryRepository.delete(req.params.id);
 
-    if (resultIsFail(deleteResult)) {
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
-    } else {
-        res.status(constants.HTTP_STATUS_OK).send();
-    }
+    const status = wasDeleted
+        ? constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
+        : constants.HTTP_STATUS_OK;
+
+    res.status(status).send();
 }
 
 const updateExerciseCategory: UpdateExerciseCategoryRequestHandler = async (req, res, next) => {

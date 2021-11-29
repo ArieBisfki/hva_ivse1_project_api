@@ -2,6 +2,8 @@ import {exec, Result} from "../../utils/FailOrSuccess";
 import ExerciseCategoryRepositoryError  from "./ExerciseCategoryRepositoryError";
 import IExerciseCategoryRepository from "./IExerciseCategoryRepository";
 import {ExerciseCategory} from "../../models/workout/ExerciseCategory";
+import {container} from "tsyringe";
+import {DI_TOKEN} from "../../di/Registry";
 
 const E = ExerciseCategoryRepositoryError;
 type E = typeof E;
@@ -20,41 +22,31 @@ export const exerciseCategories = (() => {
 })();
 
 export default class ExerciseCategoryRepositoryInMem implements IExerciseCategoryRepository {
-    private exerciseCategories: ExerciseCategory[] = Object.values(exerciseCategories);
+    private readonly exerciseCategories: ExerciseCategory[] = Object.values(exerciseCategories);
+    private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
-    async create(exerciseCategory: ExerciseCategory): Promise<R<ExerciseCategory, E["DUPLICATE"]>> {
-        return exec((resolve, err) => {
-            const existingWorkoutLog = this.exerciseCategories.find(ec => ec.id === exerciseCategory.id);
-            if (existingWorkoutLog) {
-                return err(E.DUPLICATE);
-            }
-
-            this.exerciseCategories.push(exerciseCategory);
-
-            resolve(exerciseCategory);
+    create(exerciseCategory: ExerciseCategory): Promise<R<ExerciseCategory, E["DUPLICATE"]>> {
+        return this.crudUtil.create({
+            models: this.exerciseCategories,
+            toCreate: exerciseCategory,
+            equalityBy: "id",
+            duplicateError: E.DUPLICATE
         });
     }
 
-    async update(exerciseCategory: ExerciseCategory): Promise<R<ExerciseCategory, E["NOT_FOUND"]>> {
-        return exec((resolve, err) => {
-            const existingWorkoutLogIndex = this.exerciseCategories.findIndex(ec => ec.id === exerciseCategory.id);
-            if (existingWorkoutLogIndex === -1) {
-                return err(E.NOT_FOUND);
-            }
-            this.exerciseCategories[existingWorkoutLogIndex] = exerciseCategory;
-            resolve(exerciseCategory);
-        });
+    update(exerciseCategory: ExerciseCategory): Promise<R<ExerciseCategory, E["NOT_FOUND"]>> {
+        return this.crudUtil.update({
+            models: this.exerciseCategories,
+            toUpdate: exerciseCategory,
+            equalityBy: "id",
+            notFoundError: E.NOT_FOUND
+        })
     }
 
-    async delete(id: number): Promise<R<void, E["NOT_FOUND"]>> {
-        return exec((resolve, err) => {
-            const sizeBefore = this.exerciseCategories.length;
-            this.exerciseCategories = this.exerciseCategories.filter(ec => ec.id === id);
-            const sizeAfter = this.exerciseCategories.length;
-            if (sizeBefore === sizeAfter) {
-                return err(E.NOT_FOUND);
-            }
-            resolve();
+    delete(id: number): Promise<boolean> {
+        return this.crudUtil.delete({
+            models: this.exerciseCategories,
+            filterBy: ["id", id]
         });
     }
 }

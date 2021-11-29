@@ -33,8 +33,8 @@ export const workoutLogs: WorkoutLog[] = [
 ];
 
 export default class WorkoutLogRepositoryInMem implements IWorkoutLogRepository {
-    private workoutLogs: WorkoutLog[] = workoutLogs;
-    private crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
+    private readonly workoutLogs: WorkoutLog[] = workoutLogs;
+    private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
     create(workoutLog: WorkoutLog): Promise<R<WorkoutLog, E["DUPLICATE"]>> {
         return this.crudUtil.create({
@@ -58,7 +58,7 @@ export default class WorkoutLogRepositoryInMem implements IWorkoutLogRepository 
             toUpdate: workoutLog,
             equalityBy: "id",
             notFoundError: E.NOT_FOUND
-        })
+        });
     }
 
     async delete(id: number): Promise<boolean> {
