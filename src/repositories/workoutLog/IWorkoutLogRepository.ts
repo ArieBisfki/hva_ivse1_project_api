@@ -8,7 +8,7 @@ type R<S, F> = Result<S, F>;
 
 export default interface IWorkoutLogRepository {
     create(workoutLog: WorkoutLog): P<R<WorkoutLog, E["DUPLICATE"]>>;
-    get(userId: number): P<R<WorkoutLog[], E["NOT_FOUND"]>>;
+    get(userId: number): P<WorkoutLog[] | undefined>;
     update(workoutLog: WorkoutLog): P<R<WorkoutLog, E["NOT_FOUND"]>>;
-    delete(id: number): P<R<void, E["NOT_FOUND"]>>;
+    delete(id: number): P<boolean>;
 }

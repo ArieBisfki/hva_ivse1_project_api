@@ -7,14 +7,14 @@ import {constants} from "http2";
 const workoutLogRepository = container.resolve(DI_TOKEN.WorkoutLogRepository);
 
 const getWorkoutLogs: GetWorkoutLogsRequestHandler = async (req, res, next) => {
-    const getResult = await workoutLogRepository.get(0);
+    const workoutLogs = await workoutLogRepository.get(0);
 
-    if (resultIsFail(getResult)) {
+    if (!workoutLogs) {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     } else {
         res.status(constants.HTTP_STATUS_OK)
             .json({
-                workoutLogs: getResult.result
+                workoutLogs
             })
             .send();
     }
@@ -36,14 +36,11 @@ const addWorkoutLog: AddWorkoutLogRequestHandler = async (req, res, next) => {
 }
 
 const deleteWorkoutLog: DeleteWorkoutLogRequestHandler = async (req, res, next) => {
-    const deleteResult = await workoutLogRepository.delete(req.params.id);
-
-    if (resultIsFail(deleteResult)) {
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
-    } else {
-        res.status(constants.HTTP_STATUS_OK)
-            .send();
-    }
+    const wasDeleted = await workoutLogRepository.delete(req.params.id);
+    const status = wasDeleted
+        ? constants.HTTP_STATUS_OK
+        : constants.HTTP_STATUS_INTERNAL_SERVER_ERROR;
+    res.status(status).send();
 }
 
 const updateWorkoutLog: UpdateWorkoutLogRequestHandler = async (req, res, next) => {

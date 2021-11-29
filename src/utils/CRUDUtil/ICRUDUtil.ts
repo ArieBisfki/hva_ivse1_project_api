@@ -1,44 +1,38 @@
 import {Result} from "../FailOrSuccess";
 
+export type BiPredicate<Model> = (m1: Model, m2: Model) => boolean;
+export type Predicate<Model> = (model: Model) => boolean;
+export type KeyValueTuple<Model> = [keyof Model, Model[keyof Model]]
+
 type R<S, F> = Result<S, F>;
 
 export default interface ICRUDUtil {
-    create<Model, DuplicateError>({
-                                      models,
-                                      toCreate,
-                                      modelsAreEqualFn,
-                                      duplicateError
-                                  }: {
+    create<Model, DuplicateError>(config: {
         models: Model[]
         toCreate: Model,
-        modelsAreEqualFn: (m1: Model, m2: Model) => boolean,
+        equalityBy: keyof Model | BiPredicate<Model>,
         duplicateError: DuplicateError
     }): Promise<R<Model, DuplicateError>>;
 
-    find<Model>({models, findFn}: {
+    find<Model>(config: {
         models: Model[],
-        findFn: (model: Model) => boolean
+        findBy: KeyValueTuple<Model> | Predicate<Model>
     }): Promise<Model | undefined>;
 
-    filter<Model>({models, filterFn}: {
+    filter<Model>(config: {
         models: Model[],
-        filterFn: (model: Model) => boolean
+        filterBy: Predicate<Model>
     }): Promise<Model[] | undefined>;
 
-    update<Model, NotFoundError>({
-                                     models,
-                                     toUpdate,
-                                     equalsFn,
-                                     notFoundError
-                                 }: {
+    update<Model, NotFoundError>(config: {
         models: Model[],
         toUpdate: Model,
-        equalsFn: (m1: Model, m2: Model) => boolean,
+        equalityBy: keyof Model | BiPredicate<Model>,
         notFoundError: NotFoundError
     }): Promise<R<Model, NotFoundError>>;
 
     delete<Model>(config: {
         models: Model[],
-        filterFn: (m1: Model) => boolean
+        filterBy: KeyValueTuple<Model> | Predicate<Model>
     }): Promise<boolean>;
 }

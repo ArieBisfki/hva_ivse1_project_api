@@ -1,10 +1,9 @@
 import { ExerciseLog } from "../ExerciseLog";
+import User from "../User";
 
-export default class WorkoutLog{
-    
-    constructor(
-        readonly id: number,
-        readonly exerciseLogs: ExerciseLog[] = [],
-        readonly date: Date = new Date()
-    ) {}
+export default interface WorkoutLog {
+    readonly id: number,
+    readonly user: User,
+    readonly exerciseLogs: ExerciseLog[],
+    readonly date: Date
 }

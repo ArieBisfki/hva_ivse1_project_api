@@ -8,12 +8,15 @@ import ExerciseCategoryRepository from "../repositories/exerciseCategory/IExerci
 import ExerciseCategoryRepositoryInMem from "../repositories/exerciseCategory/ExerciseCategoryRepositoryInMem";
 import AbstractAuthTokenService from "../auth/AbstractAuthTokenService";
 import {AuthTokenService} from "../auth/AuthTokenService";
+import CRUDUtilInMem from "../utils/CRUDUtil/CRUDUtilInMem";
+import ICRUDUtil from "../utils/CRUDUtil/ICRUDUtil";
 
 export const DI_TOKEN = Object.freeze(objectFromTuple([
     "ExerciseRepository",
     "WorkoutLogRepository",
     "ExerciseCategoryRepository",
-    "AuthTokenService"
+    "AuthTokenService",
+    "CRUDUtilInMem"
 ] as const));
 
 /**
@@ -24,13 +27,15 @@ export type DITokenProviderMap = {
     ExerciseRepository: ExerciseRepository,
     WorkoutLogRepository: WorkoutLogRepository,
     ExerciseCategoryRepository: ExerciseCategoryRepository,
-    AuthTokenService: AbstractAuthTokenService
+    AuthTokenService: AbstractAuthTokenService,
+    CRUDUtilInMem: ICRUDUtil
 };
 
 @registry([
     {token: DI_TOKEN.ExerciseRepository, useClass: ExerciseRepositoryInMem},
     {token: DI_TOKEN.WorkoutLogRepository, useClass: WorkoutLogRepositoryInMem},
     {token: DI_TOKEN.ExerciseCategoryRepository, useClass: ExerciseCategoryRepositoryInMem},
-    {token: DI_TOKEN.AuthTokenService, useClass: AuthTokenService}
+    {token: DI_TOKEN.AuthTokenService, useClass: AuthTokenService},
+    {token: DI_TOKEN.CRUDUtilInMem, useClass: CRUDUtilInMem}
 ])
 export default class Registry {}

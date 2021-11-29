@@ -1,22 +1,30 @@
 import {exec, Result} from "../FailOrSuccess";
-import ICRUDUtil from "./ICRUDUtil";
+import ICRUDUtil, {BiPredicate, Predicate, KeyValueTuple} from "./ICRUDUtil";
 
 type R<S, F> = Result<S, F>;
 
 export default class CRUDUtilInMem implements ICRUDUtil {
+    private equalityByUnionToFn<Model>(union: keyof Model | BiPredicate<Model>): BiPredicate<Model> {
+        return typeof union === "function"
+            ? union
+            : (m1, m2) => m1[union] === m2[union];
+    }
+
     create<Model, DuplicateError>({
                                       models,
                                       toCreate,
-                                      modelsAreEqualFn,
+                                      equalityBy: equalityByUnion,
                                       duplicateError
                                   }: {
         models: Model[]
         toCreate: Model,
-        modelsAreEqualFn: (m1: Model, m2: Model) => boolean,
+        equalityBy: keyof Model | BiPredicate<Model>,
         duplicateError: DuplicateError
     }): Promise<R<Model, DuplicateError>> {
         return exec((resolve, err) => {
-            const existingModel = models.find(m => modelsAreEqualFn(m, toCreate));
+            const equalityByFn = this.equalityByUnionToFn(equalityByUnion);
+
+            const existingModel = models.find(m => equalityByFn(m, toCreate));
             if (existingModel) {
                 return err(duplicateError);
             }
@@ -27,33 +35,38 @@ export default class CRUDUtilInMem implements ICRUDUtil {
         });
     }
 
-    async find<Model>({models, findFn}: {
+    async find<Model>({models, findBy}: {
         models: Model[],
-        findFn: (model: Model) => boolean
+        findBy: KeyValueTuple<Model> | Predicate<Model>
     }): Promise<Model | undefined> {
-        return models.find(findFn);
+        const findByFn = typeof findBy === "function"
+            ? findBy
+            : (model: Model) => model[findBy[0]] === findBy[1]
+        return models.find(findByFn);
     }
 
-    async filter<Model>({models, filterFn}: {
+    async filter<Model>({models, filterBy}: {
         models: Model[],
-        filterFn: (model: Model) => boolean
+        filterBy: Predicate<Model>
     }): Promise<Model[] | undefined> {
-        return models.filter(filterFn);
+        return models.filter(filterBy);
     }
 
     update<Model, NotFoundError>({
                                      models,
                                      toUpdate,
-                                     equalsFn,
+                                     equalityBy: equalityByUnion,
                                      notFoundError
                                  }: {
         models: Model[],
         toUpdate: Model,
-        equalsFn: (m1: Model, m2: Model) => boolean,
+        equalityBy: keyof Model | BiPredicate<Model>,
         notFoundError: NotFoundError
     }): Promise<R<Model, NotFoundError>> {
         return exec((resolve, err) => {
-            const indexOfExistingModel = models.findIndex(m => equalsFn(m, toUpdate));
+            const equalityByFn = this.equalityByUnionToFn(equalityByUnion);
+
+            const indexOfExistingModel = models.findIndex(m => equalityByFn(m, toUpdate));
             if (indexOfExistingModel === -1) {
                 return err(notFoundError);
             }
@@ -66,12 +79,19 @@ export default class CRUDUtilInMem implements ICRUDUtil {
 
     async delete<Model>(config: {
         models: Model[],
-        filterFn: (m1: Model) => boolean
+        filterBy: KeyValueTuple<Model> | Predicate<Model>
     }): Promise<boolean> {
-        const {models, filterFn} = config;
+        const {
+            models,
+            filterBy: filterByUnion
+        } = config;
+
+        const filterByFn = typeof filterByUnion === "function"
+            ? filterByUnion
+            : (model: Model) => model[filterByUnion[0]] === filterByUnion[1];
 
         const sizeBefore = models.length;
-        config.models = models.filter(filterFn);
+        config.models = models.filter(filterByFn);
         const sizeAfter = models.length;
 
         return sizeBefore !== sizeAfter;
