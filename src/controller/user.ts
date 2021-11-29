@@ -1,9 +1,15 @@
-import {Gender, Goal, User} from '../models/User'
-import jwt, { Secret } from 'jsonwebtoken';
-import {LoginUserRequestHandler, GetUserRequestHandler, AddUserRequestHandler, RegisterUserRequestHandler} from "../models/endpoint/user";
-import { container } from 'tsyringe';
-import { DI_TOKEN } from '../di/Registry';
+import {container} from "tsyringe";
+import {
+    AddUserRequestHandler,
+    GetUserRequestHandler,
+    LoginUserRequestHandler,
+    RegisterUserRequestHandler
+} from "../models/endpoint/user";
+import jwt from "jsonwebtoken";
+import {DI_TOKEN} from "../di/Registry";
 import * as users from "../data/users.json";
+
+const userRepository = container.resolve(DI_TOKEN.UserRepository);
 
 const getUser: GetUserRequestHandler = async (req, res, next) => {
     let id = req.params.id;
@@ -30,11 +36,10 @@ const addUser: AddUserRequestHandler = (req, res, next) => {
     });
 }
 
-const loginUser: LoginUserRequestHandler = (req, res, next) => {
+const loginUser: LoginUserRequestHandler = async (req, res, next) => {
+    const user = await userRepository.getByUsername(req.body.username);
 
-    let user = userRepository.get(req.body.username);
-
-    if(user == null){
+    if(!user){
         return res.status(404).end("User is not found or doesn't exist!");
     }else if(req.body.password.trim == null || req.body.password !== user.password){
         return res.status(401).end("Wrong username or password!");
@@ -48,12 +53,12 @@ const generateToken = (username: string) => {
     //return jwt.sign({},,);
 }
 
-const registerUser: RegisterUserRequestHandler = (req, res, next) => {
+const registerUser: RegisterUserRequestHandler = async (req, res, next) => {
 
-    let user = userRepository.get(req.body.username);
+    const user = await userRepository.getByUsername(req.body.username);
 
     //check if username doesnt exist..
-    if(user != null){
+    if(user){
         return res.status(403).end("A user with that username already exists!");
     }else{
         user

@@ -23,10 +23,17 @@ export default class UserRepositoryInMem implements IUserRepository {
         });
     }
 
-    get(id: number): Promise<User | undefined> {
+    getById(id: number): Promise<User | undefined> {
         return this.crudUtil.find({
             models: this.users,
             findBy: ["id", id]
+        });
+    }
+
+    getByUsername(username: string): Promise<User | undefined> {
+        return this.crudUtil.find({
+            models: this.users,
+            findBy: ["username", username]
         });
     }
 
