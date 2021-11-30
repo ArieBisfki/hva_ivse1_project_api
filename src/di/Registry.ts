@@ -12,12 +12,15 @@ import CRUDUtilInMem from "../utils/CRUDUtil/CRUDUtilInMem";
 import ICRUDUtil from "../utils/CRUDUtil/ICRUDUtil";
 import IUserRepository from "../repositories/user/IUserRepository";
 import UserRepositoryInMem from "../repositories/user/UserRepositoryInMem";
+import SocialGroupRepositoryInMem from "../repositories/socialGroup/SocialGroupRepositoryInMem";
+import ISocialGroupRepository from "../repositories/socialGroup/ISocialGroupRepository";
 
 export const DI_TOKEN = Object.freeze(objectFromTuple([
     "ExerciseRepository",
     "WorkoutLogRepository",
     "ExerciseCategoryRepository",
     "UserRepository",
+    "SocialGroupRepository",
     "AuthTokenService",
     "CRUDUtilInMem"
 ] as const));
@@ -31,6 +34,7 @@ export type DITokenProviderMap = {
     WorkoutLogRepository: WorkoutLogRepository,
     ExerciseCategoryRepository: ExerciseCategoryRepository,
     UserRepository: IUserRepository,
+    SocialGroupRepository: ISocialGroupRepository,
     AuthTokenService: AbstractAuthTokenService,
     CRUDUtilInMem: ICRUDUtil
 };
@@ -40,7 +44,9 @@ export type DITokenProviderMap = {
     {token: DI_TOKEN.WorkoutLogRepository, useClass: WorkoutLogRepositoryInMem},
     {token: DI_TOKEN.ExerciseCategoryRepository, useClass: ExerciseCategoryRepositoryInMem},
     {token: DI_TOKEN.UserRepository, useClass: UserRepositoryInMem},
+    {token: DI_TOKEN.SocialGroupRepository, useClass: SocialGroupRepositoryInMem},
     {token: DI_TOKEN.AuthTokenService, useClass: AuthTokenService},
     {token: DI_TOKEN.CRUDUtilInMem, useClass: CRUDUtilInMem}
+
 ])
 export default class Registry {}
