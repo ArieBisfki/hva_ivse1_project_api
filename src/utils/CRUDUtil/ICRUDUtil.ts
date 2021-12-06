@@ -2,7 +2,7 @@ import {Result} from "../FailOrSuccess";
 
 export type BiPredicate<Model> = (m1: Model, m2: Model) => boolean;
 export type Predicate<Model> = (model: Model) => boolean;
-export type KeyValueTuple<Model> = [keyof Model, Model[keyof Model]]
+export type KeyValueTuple<Model> = [keyof Model, Model[keyof Model]];
 
 type R<S, F> = Result<S, F>;
 
