@@ -17,7 +17,7 @@ export default class SocialGroupRepositoryInMem implements ISocialGroupRepositor
     private readonly users = Object.values(users) as User[];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
-    socialGroup: SocialGroup[] = [
+    socialGroups: SocialGroup[] = [
         {
             users: [users.Arie],
             id: 1,
@@ -40,23 +40,32 @@ export default class SocialGroupRepositoryInMem implements ISocialGroupRepositor
 
     async create(socialGroup: SocialGroup): Promise<R<SocialGroup, E["DUPLICATE"]>> {
         return this.crudUtil.create({
-            models: this.socialGroup,
+            models: this.socialGroups,
             toCreate: socialGroup,
             equalityBy: "id",
             duplicateError: E.DUPLICATE
         });
     }
 
-    async get(groupId: number): Promise<SocialGroup[] | undefined> {
-        return this.crudUtil.filter({
-            models: this.socialGroup,
-            filterBy: socialGroup => socialGroup.id === groupId
-        });    
+    // TODO: interface aanpassen
+    async getByGroupId(groupId: number): Promise<SocialGroup | undefined> {
+        return this.crudUtil.find({
+            models: this.socialGroups,
+            findBy: ['id',groupId]
+        }); 
     }
 
+    // TODO: interface aanpassen
+    async getByUserId(userId: number): Promise<SocialGroup[] | undefined> {
+        return this.crudUtil.filter({
+            models: this.socialGroups,
+            filterBy: socialGroup => socialGroup.users.some(user => user.id === userId) 
+        });    
+    }
+    
     async update(socialGroup: SocialGroup): Promise<R<SocialGroup, E["NOT_FOUND"]>> {
         return this.crudUtil.update({
-            models: this.socialGroup,
+            models: this.socialGroups,
             toUpdate: socialGroup,
             equalityBy: "id",
             notFoundError: E.NOT_FOUND
@@ -65,7 +74,7 @@ export default class SocialGroupRepositoryInMem implements ISocialGroupRepositor
 
     async delete(id: number): Promise<boolean> {
         return this.crudUtil.delete({
-            models: this.socialGroup,
+            models: this.socialGroups,
             filterBy: ["id", id]
         });    
     }

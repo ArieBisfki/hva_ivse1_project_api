@@ -6,12 +6,11 @@ import { Exercise } from "../../models/workout/Exercise";
 import { Result } from "../../utils/FailOrSuccess";
 import { exerciseCategoriesInit } from "../exerciseCategory/ExerciseCategoryRepositoryInMem";
 import ISocialGroupExerciseRepository from "./IExercisesBySocialGroupRepository";
-import SocialGroupExerciseRepositoryError from "./ExercisesBySocialGroupRepositoryError";
+import ExercisesBySocialGroupRepositoryError from "./ExercisesBySocialGroupRepositoryError";
 import * as users from "../../data/users.json";
-import User from "../../models/User";
 import { workoutLogsInit } from "../workoutLog/WorkoutLogRepositoryInMem";
 
-const E = SocialGroupExerciseRepositoryError;
+const E = ExercisesBySocialGroupRepositoryError;
 type E = typeof E;
 type R<S, F> = Result<S, F>;
 
@@ -64,7 +63,7 @@ export default class ExercisesBySocialGroupRepoInMem implements ISocialGroupExer
 
     private readonly socialgroupExercise = new ExercisesBySocialGroup(this.socialGroups[0], this.socialGroups[0].exercises);
 
-    create(socialGroup: number | SocialGroup, exercices: Exercise[]): Promise<R<SocialGroup, E["DUPLICATE"]>> {
+    create(socialGroup: number | SocialGroup, exercices: Exercise[]): Promise<R<void, E["DUPLICATE"]>> {
         
         // typeof socialGroup === "number" &&  this.socialGroups.find(s => s.id === socialGroup.valueOf())
         // ? exercices.forEach(e => this.socialGroups.find(s => s.id === socialGroup.valueOf())?.exercises.push(e))
