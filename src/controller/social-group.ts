@@ -48,6 +48,7 @@ const updateSocialGroup: UpdateSocialGroupRequestHandler = async(req, res, next)
 // TODO: hoe gaan we dit aanpakken?
 const getAllSocialGroupsByQuery: SocialGroupsByQueryRequestHandler = async(req, res, next) => {
     
+    
 }
 
 const getUserSocialGroups: GetUserSocialGroupsRequestHandler = async(req, res, next) => {

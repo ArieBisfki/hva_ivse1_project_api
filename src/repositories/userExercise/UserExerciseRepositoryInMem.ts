@@ -19,22 +19,19 @@ export const exercisesInit = (() => {
     const benchPressExercise: Exercise = {
         id: 1,
         name: BENCH_PRESS,
-        category: exerciseCategoriesInit.Push,
-        user: users.Arie
+        category: exerciseCategoriesInit.Push
     };
 
     const squatExercise: Exercise = {
         id: 2,
         name: SQUAT,
-        category: exerciseCategoriesInit["Lower Body"],
-        user: users.Arie
+        category: exerciseCategoriesInit["Lower Body"]
     };
 
     const runningExercise: Exercise = {
         id: 3,
         name: RUNNING,
-        category: exerciseCategoriesInit.Cardio,
-        user: users.Arie
+        category: exerciseCategoriesInit.Cardio
     };
 
     return {
@@ -57,10 +54,11 @@ export default class ExerciseRepositoryInMem implements IExerciseRepository {
         });
     }
 
-    get(userId: number): Promise<Exercise[] | undefined> {
+    // Voorlopige implementatie, get all exercises voor deze user
+    get(): Promise<Exercise[] | undefined> {
         return this.crudUtil.filter({
             models: this.exercises,
-            filterBy: exercise => exercise.user.id === userId
+            filterBy: exercise => true  
         });
     }
 
