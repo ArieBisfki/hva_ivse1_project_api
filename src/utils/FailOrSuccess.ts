@@ -30,3 +30,11 @@ export function exec<S = void, F = void>(
         );
     });
 }
+
+export function resolveSuccess<S>(result: S): Success<S> {
+    return new Success(result);
+}
+
+export function resolveFail<F>(fail: F): Fail<F> {
+    return new Fail(fail);
+}

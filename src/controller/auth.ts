@@ -1,51 +1,84 @@
 import {container} from "tsyringe";
 import {
-    LoginUserRequestHandler,
+    LoginUserPasswordReqBody, LoginUserRefreshTokenReqBody, loginUserReqBodyIsPassword,
+    LoginUserRequestHandler, LoginUserResBody,
     RegisterUserRequestHandler
 } from "../models/endpoint/auth";
 import {DI_TOKEN} from "../di/Registry";
 import {constants} from "http2";
+import * as FailOrSuccess from "../utils/FailOrSuccess";
+import AbstractAuthTokenService from "../auth/AbstractAuthTokenService";
 import {resultIsFail} from "../utils/FailOrSuccess";
 
 const userRepository = container.resolve(DI_TOKEN.UserRepository);
 const authTokenService = container.resolve(DI_TOKEN.AuthTokenService);
 
-/*const getUser: GetUserRequestHandler = async (req, res, next) => {
-    let id = req.params.id;
+function loginByPassword({username, password}: LoginUserPasswordReqBody): Promise<FailOrSuccess.Result<LoginUserResBody, {
+    statusCode: number
+}>> {
+    return FailOrSuccess.exec(async (resolve, err) => {
+        const user = await userRepository.getByUsername(username);
 
-    const user = users.Arie;
-    console.log("testtses:   " + req.params);
+        if (!user) {
+            return err({statusCode: constants.HTTP_STATUS_BAD_REQUEST});
+        }
 
-    return res.status(200).json({
-        message: user
+        if (password !== user.password) {
+            return err({statusCode: constants.HTTP_STATUS_UNAUTHORIZED});
+        }
+
+        const accessToken = await authTokenService.generateAccessTokenByUserId(user.id!);
+        if (!accessToken) {
+            return err({statusCode: constants.HTTP_STATUS_INTERNAL_SERVER_ERROR});
+        }
+
+        const refreshToken = await authTokenService.generateRefreshToken(user.id!);
+        if (!refreshToken) {
+            return err({statusCode: constants.HTTP_STATUS_INTERNAL_SERVER_ERROR});
+        }
+
+        resolve({
+            accessToken,
+            refreshToken
+        });
     });
-};*/
+}
+
+function loginByRefreshToken({refreshToken}: LoginUserRefreshTokenReqBody): Promise<FailOrSuccess.Result<LoginUserResBody, {
+    statusCode: number
+}>> {
+    return FailOrSuccess.exec(async (resolve, err) => {
+        const accessTokenResult = await authTokenService.generateAccessTokenByRefreshToken(refreshToken);
+        if (resultIsFail(accessTokenResult)) {
+            return err({statusCode: constants.HTTP_STATUS_INTERNAL_SERVER_ERROR});
+        }
+        const accessToken = accessTokenResult.result;
+
+        const newRefreshToken = await authTokenService.generateRefreshToken();
+        if (!newRefreshToken) {
+            return err({statusCode: constants.HTTP_STATUS_INTERNAL_SERVER_ERROR});
+        }
+
+        resolve({
+            accessToken: accessTokenResult,
+            refreshToken: newRefreshToken
+        });
+    });
+}
 
 const loginUser: LoginUserRequestHandler = async (req, res, next) => {
-    const user = await userRepository.getByUsername(req.body.username);
+    const resBodyResult = loginUserReqBodyIsPassword(req.body)
+        ? await loginByPassword(req.body)
+        : await loginByRefreshToken(req.body);
 
-    if (!user) {
-        return res.status(constants.HTTP_STATUS_NOT_FOUND).send();
+    if (FailOrSuccess.resultIsFail(resBodyResult)) {
+        return res.status(resBodyResult.error.statusCode)
+            .send();
+    } else {
+        return res.status(constants.HTTP_STATUS_OK)
+            .json(resBodyResult.result)
+            .send();
     }
-
-    if (req.body.password !== user.password) {
-        return res.status(constants.HTTP_STATUS_UNAUTHORIZED).send();
-    }
-
-    const accessToken = await authTokenService.generateAccessToken(user.id!);
-    if (!accessToken) {
-        return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
-    }
-
-    const refreshToken = await authTokenService.generateRefreshToken(user.id!);
-    if (!refreshToken) {
-        return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
-    }
-
-    res.status(constants.HTTP_STATUS_OK).json({
-        accessToken,
-        refreshToken
-    }).send();
 }
 
 const registerUser: RegisterUserRequestHandler = async (req, res, next) => {
@@ -56,7 +89,7 @@ const registerUser: RegisterUserRequestHandler = async (req, res, next) => {
         return res.status(constants.HTTP_STATUS_BAD_REQUEST).send();
     } else {
         const createUserResult = await userRepository.create(req.body);
-        if (resultIsFail(createUserResult)) {
+        if (FailOrSuccess.resultIsFail(createUserResult)) {
             return res.status(constants.HTTP_STATUS_BAD_REQUEST).send();
         } else {
             return res.status(constants.HTTP_STATUS_OK).send();
