@@ -8,7 +8,8 @@ import {exerciseCategoriesInit} from "../exerciseCategory/ExerciseCategoryReposi
 import ISocialGroupExerciseRepository from "./IExercisesBySocialGroupRepository";
 import ExercisesBySocialGroupRepositoryError from "./ExercisesBySocialGroupRepositoryError";
 import {socialGroupsInit} from "../socialGroup/SocialGroupRepositoryInMem";
-import {concatWithoutDuplicates, duplicateCheck} from "../../utils/ArrayUtils";
+import {arrayMinus, concatWithoutDuplicates, duplicateCheck} from "../../utils/ArrayUtils";
+import {equalityBiPredicateOnProp, equalityPredicateOnProp} from "../../utils/FuncUtils";
 
 const E = ExercisesBySocialGroupRepositoryError;
 type E = typeof E;
@@ -94,15 +95,16 @@ export default class ExercisesBySocialGroupRepoInMem implements ISocialGroupExer
                 // Success: all non duplicate exercises were added
                 return resolve(nonDuplicateExercises);
             } else {
-                // Find existing model
-                const existingExercises = await this.get(socialGroupModel.id);
+                // Find existing exercises
+                const existingExercises = await this.get(socialGroupModel.id)
+                    .then(result => result?.exercises);
                 if (!existingExercises) {
                     // Find logically shouldn't fail due to "create" earlier returning a duplicate error
                     return err(E.INTERNAL_ERROR);
                 }
 
                 // Compose updated exercises list
-                const updatedExercises = concatWithoutDuplicates(existingExercises, nonDuplicateExercises, "id");
+                const [updatedExercises, duplicateExercisesForUpdate] = concatWithoutDuplicates(existingExercises, nonDuplicateExercises, "id");
 
                 // Attempt update
                 const updateResult = await this.crudUtil.update({
@@ -118,20 +120,14 @@ export default class ExercisesBySocialGroupRepoInMem implements ISocialGroupExer
                     // Update logically shouldn't fail due to "create" earlier returning a duplicate error
                     return err(E.INTERNAL_ERROR);
                 } else {
-                    return resolve(nonDuplicateExercises);
+                    const nonDuplicateExercisesForUpdate = arrayMinus(nonDuplicateExercises, duplicateExercisesForUpdate, equalityBiPredicateOnProp("id"))
+                    return resolve(nonDuplicateExercisesForUpdate);
                 }
             }
         });
     }
 
-    get(socialGroupId: number): Promise<Exercise[] | undefined> {
-        return this.crudUtil.find({
-            models: this.exercisesBySocialGroups,
-            findBy: ({socialGroup: {id}}) => id === socialGroupId
-        }).then(exercisesBySocialGroup => exercisesBySocialGroup?.exercises);
-    }
-
-    private _get(socialGroupId: number): Promise<ExercisesBySocialGroup | undefined> {
+    get(socialGroupId: number): Promise<ExercisesBySocialGroup | undefined> {
         return this.crudUtil.find({
             models: this.exercisesBySocialGroups,
             findBy: ({socialGroup: {id}}) => id === socialGroupId
@@ -140,7 +136,7 @@ export default class ExercisesBySocialGroupRepoInMem implements ISocialGroupExer
 
     delete(socialGroupId: number, ...exerciseIdsToDelete: number[]): Promise<R<Exercise[], E["NOT_FOUND"]>> {
         return exec(async (resolve, err) => {
-            const exercisesBySocialGroup = await this._get(socialGroupId);
+            const exercisesBySocialGroup = await this.get(socialGroupId);
             if (!exercisesBySocialGroup) {
                 return err(E.NOT_FOUND);
             }

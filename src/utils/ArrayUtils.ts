@@ -1,10 +1,10 @@
+import * as FuncUtils from "./FuncUtils";
+import {EqualityBy} from "./FuncUtils";
+
 /**
  * @author Arie Bisfki
  * Contains handy utilities for working with arrays.
  */
-
-import {equalityBiPredicateOnProp, equalityPredicateOnProp} from "./FuncUtils";
-import {eq} from "lodash";
 
 /**
  * @param arr Array to remove duplicates on.
@@ -18,16 +18,14 @@ export function duplicateCheck<T>(arr: readonly T[]) {
          * @returns tuple in which first item is all of the non-duplicates, and the second item
          * is the duplicates.
          */
-        equalityBy(arg: ((a: T, b: T) => boolean) | keyof T): [T[], T[]] {
-            const equalityByCallback = typeof arg === "function"
-                ? (a: T) => (b: T) => arg(a, b)
-                : (a: T) => (b: T) => a[arg] === b[arg];
+        equalityBy(arg: EqualityBy<T, T>): [T[], T[]] {
+            const equalityByFn = FuncUtils.equalityByFn(arg);
 
             const duplicates: T[] = [];
             const nonDuplicates: T[] = [];
             arr.forEach(a => {
-                if (nonDuplicates.some(equalityByCallback(a))) {
-                    if (!duplicates.some(equalityByCallback(a))) {
+                if (nonDuplicates.some(b => equalityByFn(a, b))) {
+                    if (!duplicates.some(b => equalityByFn(a, b))) {
                         duplicates.push(a);
                     }
                 } else {
@@ -41,15 +39,24 @@ export function duplicateCheck<T>(arr: readonly T[]) {
 
 export function concatWithoutDuplicates<T, U>(arrA: T[],
                                               arrB: U[],
-                                              equalityBy?: (keyof (T | U)) | ((a: T, b: U) => boolean)
-): (T | U)[] {
-    // Narrow all of the different equalityBy types down to just the function type
-    // Any casts are done purposefully: ts compiler prohibits equality check between different types but it works otherwise at runtime
-    const equalityByFn: (a: T, b: U) => boolean = equalityBy == undefined
-        ? (a, b) => (a as any) === (b as any)
-        : typeof equalityBy === "function"
-            ? equalityBy
-            : (a, b) => (a[equalityBy] as any) === (b[equalityBy] as any);
+                                              equalityBy?: EqualityBy<T, U>
+): [(T | U)[], U[]] {
+    const equalityByFn = FuncUtils.equalityByFn(equalityBy);
 
-    return [...arrA, ...(arrB.filter(b => arrA.some(a => equalityByFn(a, b))))];
+    const duplicatesInArrB: U[] = [];
+    const withoutDuplicates = [...arrA, ...(arrB.filter(b => {
+        const shouldBeKept = arrA.some(a => equalityByFn(a, b));
+        if (!shouldBeKept) {
+            duplicatesInArrB.push(b);
+        }
+        return shouldBeKept;
+    }))];
+    return [withoutDuplicates, duplicatesInArrB];
+}
+
+export function arrayMinus<T>(arrA: T[], arrB: T[], equalityBy?: EqualityBy<T, T>): T[] {
+    const equalityByFn = FuncUtils.equalityByFn(equalityBy);
+    return arrA.concat(arrB
+        .filter(b => !arrA.some(a => equalityByFn(a, b)))
+    );
 }
