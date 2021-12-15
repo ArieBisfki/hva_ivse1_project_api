@@ -13,11 +13,16 @@ type R<S, F> = Result<S, F>;
 export default class UserRepositoryInMem implements IUserRepository {
     private readonly users = Object.values(users);
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
+    private idCounter = this.users.length;
 
     create(user: User): Promise<R<User, E["DUPLICATE"]>> {
+        const userWithId: User = {
+            ...user,
+            id: ++this.idCounter
+        };
         return this.crudUtil.create({
             models: this.users,
-            toCreate: user,
+            toCreate: userWithId,
             equalityBy: "id",
             duplicateError: E.DUPLICATE
         });

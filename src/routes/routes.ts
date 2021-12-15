@@ -1,5 +1,5 @@
 import express from "express";
-import UserController from '../controller/user';
+import UserController from '../controller/auth';
 import WorkoutLog from '../controller/workout-log';
 import Exercise from '../controller/exercise';
 import ExerciseCategory from '../controller/exercise-category';
@@ -7,10 +7,8 @@ import ExerciseCategory from '../controller/exercise-category';
 const router = express.Router();
 
 //user endpoints
-router.post('/user', UserController.addUser);
-router.get('/user', UserController.getUser);
-router.get('/login', UserController.authenticateToken, UserController.loginUser);
-router.get('/register', UserController.registerUser);
+router.post('/auth/login', UserController.loginUser);
+router.post('/auth/register', UserController.registerUser);
 
 //workout-log endpoints
 router.get('/workout-log', WorkoutLog.getWorkoutLogs);

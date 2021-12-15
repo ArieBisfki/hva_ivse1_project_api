@@ -15,9 +15,18 @@ export const exerciseCategoriesInit = (() => {
     const CARDIO = "Cardio";
 
     return {
-        [PUSH]: new ExerciseCategory(0, PUSH),
-        [LOWER_BODY]: new ExerciseCategory(1, LOWER_BODY),
-        [CARDIO]: new ExerciseCategory(2, CARDIO)
+        [PUSH]: {
+            id: 0,
+            name: PUSH
+        },
+        [LOWER_BODY]: {
+            id: 1,
+            name: LOWER_BODY
+        },
+        [CARDIO]: {
+            id: 2,
+            name: CARDIO
+        },
     };
 })();
 

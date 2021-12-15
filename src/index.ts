@@ -4,12 +4,9 @@ import morgan from 'morgan';
 import express from 'express';
 import routes from './routes/routes';
 import "./augmentations/tsyringe";
-import dotenv from "dotenv";
-import * as path from "path";
+import setupEnv from "./utils/env";
 
-dotenv.config({
-    path: path.resolve(__dirname, ".env")
-});
+setupEnv();
 
 const router = express();
 router.use(morgan('dev'));
