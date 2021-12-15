@@ -48,7 +48,7 @@ export default class CRUDUtilInMem implements ICRUDUtil {
     async filter<Model>({models, filterBy}: {
         models: Model[],
         filterBy: Predicate<Model>
-    }): Promise<Model[] | undefined> {
+    }): Promise<Model[]> {
         return models.filter(filterBy);
     }
 

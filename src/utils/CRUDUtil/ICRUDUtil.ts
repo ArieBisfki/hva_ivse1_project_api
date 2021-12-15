@@ -22,7 +22,7 @@ export default interface ICRUDUtil {
     filter<Model>(config: {
         models: Model[],
         filterBy: Predicate<Model>
-    }): Promise<Model[] | undefined>;
+    }): Promise<Model[]>;
 
     update<Model, NotFoundError>(config: {
         models: Model[],

@@ -1,7 +1,7 @@
 import {registry} from "tsyringe";
-import ExerciseRepository from "../repositories/exercise/IExerciseRepository";
+import ExerciseRepository from "../repositories/userExercise/IExerciseRepository";
 import WorkoutLogRepository from "../repositories/workoutLog/IWorkoutLogRepository";
-import ExerciseRepositoryInMem from "../repositories/exercise/ExerciseRepositoryInMem";
+import ExerciseRepositoryInMem from "../repositories/userExercise/UserExerciseRepositoryInMem";
 import objectFromTuple from "../utils/objectFromTuple";
 import WorkoutLogRepositoryInMem from "../repositories/workoutLog/WorkoutLogRepositoryInMem";
 import ExerciseCategoryRepository from "../repositories/exerciseCategory/IExerciseCategoryRepository";
@@ -12,6 +12,8 @@ import CRUDUtilInMem from "../utils/CRUDUtil/CRUDUtilInMem";
 import ICRUDUtil from "../utils/CRUDUtil/ICRUDUtil";
 import IUserRepository from "../repositories/user/IUserRepository";
 import UserRepositoryInMem from "../repositories/user/UserRepositoryInMem";
+import SocialGroupRepositoryInMem from "../repositories/socialGroup/SocialGroupRepositoryInMem";
+import ISocialGroupRepository from "../repositories/socialGroup/ISocialGroupRepository";
 import IUserRefreshTokenRepository from "../repositories/userRefreshTokens/IUserRefreshTokenRepository";
 import UserRefreshTokenRepositoryInMem from "../repositories/userRefreshTokens/UserRefreshTokenRepositoryInMem";
 
@@ -20,6 +22,7 @@ export const DI_TOKEN = Object.freeze(objectFromTuple([
     "WorkoutLogRepository",
     "ExerciseCategoryRepository",
     "UserRepository",
+    "SocialGroupRepository",
     "AuthTokenService",
     "CRUDUtilInMem",
     "UserRefreshTokenRepository"
@@ -34,6 +37,7 @@ export type DITokenProviderMap = {
     WorkoutLogRepository: WorkoutLogRepository,
     ExerciseCategoryRepository: ExerciseCategoryRepository,
     UserRepository: IUserRepository,
+    SocialGroupRepository: ISocialGroupRepository,
     AuthTokenService: AbstractAuthTokenService,
     CRUDUtilInMem: ICRUDUtil,
     UserRefreshTokenRepository: IUserRefreshTokenRepository
@@ -44,6 +48,7 @@ export type DITokenProviderMap = {
     {token: DI_TOKEN.WorkoutLogRepository, useClass: WorkoutLogRepositoryInMem},
     {token: DI_TOKEN.ExerciseCategoryRepository, useClass: ExerciseCategoryRepositoryInMem},
     {token: DI_TOKEN.UserRepository, useClass: UserRepositoryInMem},
+    {token: DI_TOKEN.SocialGroupRepository, useClass: SocialGroupRepositoryInMem},
     {token: DI_TOKEN.AuthTokenService, useClass: AuthTokenService},
     {token: DI_TOKEN.CRUDUtilInMem, useClass: CRUDUtilInMem},
     {token: DI_TOKEN.UserRefreshTokenRepository, useClass: UserRefreshTokenRepositoryInMem}
