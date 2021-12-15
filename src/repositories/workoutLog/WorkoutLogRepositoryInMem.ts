@@ -27,7 +27,7 @@ export const workoutLogsInit: WorkoutLog[] = [
 ];
 
 export default class WorkoutLogRepositoryInMem implements IWorkoutLogRepository {
-    private readonly workoutLogs: WorkoutLog[] = workoutLogsInit;
+    private readonly workoutLogs: WorkoutLog[] = [...workoutLogsInit];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
     create(workoutLog: WorkoutLog): Promise<R<WorkoutLog, E["DUPLICATE"]>> {

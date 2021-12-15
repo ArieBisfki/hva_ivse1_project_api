@@ -12,31 +12,33 @@ const E = SocialGroupRepositoryError;
 type E = typeof E;
 type R<S,F> = Result<S,F>;
 
+export const socialGroupsInit: SocialGroup[] = [
+    {
+        users: [users.Arie],
+        id: 1,
+        name: "socialgroup1",
+        workoutLogs: workoutLogsInit
+    },
+    {
+        users: [users.Arie],
+        id: 2,
+        name: "socialgroup2",
+        workoutLogs: workoutLogsInit
+    },
+    {
+        users: [users.Arie],
+        id: 3,
+        name: "socialgroup3",
+        workoutLogs: workoutLogsInit
+    },
+];
+
 export default class SocialGroupRepositoryInMem implements ISocialGroupRepository{
 
     private readonly users = Object.values(users) as User[];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
-    socialGroups: SocialGroup[] = [
-        {
-            users: [users.Arie],
-            id: 1,
-            name: "socialgroup1",
-            workoutLogs: workoutLogsInit
-        },
-        {
-            users: [users.Arie],
-            id: 2,
-            name: "socialgroup2",
-            workoutLogs: workoutLogsInit
-        },
-        {
-            users: [users.Arie],
-            id: 3,
-            name: "socialgroup3",
-            workoutLogs: workoutLogsInit
-        },
-    ];
+    private socialGroups: SocialGroup[] = [...socialGroupsInit];
 
     async create(socialGroup: SocialGroup): Promise<R<SocialGroup, E["DUPLICATE"]>> {
         return this.crudUtil.create({
@@ -47,16 +49,14 @@ export default class SocialGroupRepositoryInMem implements ISocialGroupRepositor
         });
     }
 
-    // TODO: interface aanpassen
-    async getByGroupId(groupId: number): Promise<SocialGroup | undefined> {
+    getByGroupId(groupId: number): Promise<SocialGroup | undefined> {
         return this.crudUtil.find({
             models: this.socialGroups,
-            findBy: ['id',groupId]
+            findBy: ['id', groupId]
         }); 
     }
 
-    // TODO: interface aanpassen
-    async getByUserId(userId: number): Promise<SocialGroup[] | undefined> {
+    getByUserId(userId: number): Promise<SocialGroup[]> {
         return this.crudUtil.filter({
             models: this.socialGroups,
             filterBy: socialGroup => socialGroup.users.some(user => user.id === userId) 

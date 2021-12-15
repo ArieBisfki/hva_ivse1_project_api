@@ -1,5 +1,5 @@
 import { UserExercise } from "../UserExercise";
-import { ExercisesBySocialGroup } from "./SocialGroupExercise";
+import { ExercisesBySocialGroup } from "./ExercisesBySocialGroup";
 
 export class ExerciseSyncLink {
 

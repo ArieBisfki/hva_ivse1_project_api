@@ -8,8 +8,9 @@ type P<T> = Promise<T>;
 type R<S, F> = Result<S, F>;
 
 export default interface IExercisesBySocialGroupRepository {
-    create(socialGroup: number | SocialGroup, exercises: Exercise[]): P<R<void, E["DUPLICATE"]>>;
+    create(socialGroup: number | SocialGroup, exercises: Exercise[]): P<R<Exercise[],
+        E["DUPLICATE"] | E["NOT_FOUND"] | E["INTERNAL_ERROR"]>>;
     get(socialGroupId: number): P<Exercise[] | undefined>;
-    update(exercise: Exercise): P<R<Exercise[], E["NOT_FOUND"]>>;
-    delete(id: number): P<boolean>
+    delete(socialGroupId: number, ...exerciseIds: number[]): P<R<Exercise[], E["NOT_FOUND"]>>;
+    deleteAll(socialGroupId: number): P<boolean>;
 }

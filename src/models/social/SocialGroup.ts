@@ -8,5 +8,4 @@ export interface SocialGroup{
     readonly name: string;
     readonly workoutLogs: WorkoutLog[];
     readonly linkId?: string;
-    readonly exercises: Exercise[];
 }
