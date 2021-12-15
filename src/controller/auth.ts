@@ -7,7 +7,6 @@ import {
 import {DI_TOKEN} from "../di/Registry";
 import {constants} from "http2";
 import * as FailOrSuccess from "../utils/FailOrSuccess";
-import AbstractAuthTokenService from "../auth/AbstractAuthTokenService";
 import {resultIsFail} from "../utils/FailOrSuccess";
 
 const userRepository = container.resolve(DI_TOKEN.UserRepository);
@@ -52,15 +51,14 @@ function loginByRefreshToken({refreshToken}: LoginUserRefreshTokenReqBody): Prom
         if (resultIsFail(accessTokenResult)) {
             return err({statusCode: constants.HTTP_STATUS_INTERNAL_SERVER_ERROR});
         }
-        const accessToken = accessTokenResult.result;
 
-        const newRefreshToken = await authTokenService.generateRefreshToken();
+        const newRefreshToken = await authTokenService.generateRefreshToken(accessTokenResult.result.payload.userId);
         if (!newRefreshToken) {
             return err({statusCode: constants.HTTP_STATUS_INTERNAL_SERVER_ERROR});
         }
 
         resolve({
-            accessToken: accessTokenResult,
+            accessToken: accessTokenResult.result.accessToken,
             refreshToken: newRefreshToken
         });
     });
