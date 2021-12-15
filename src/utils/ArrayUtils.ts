@@ -4,6 +4,7 @@
  */
 
 import {equalityBiPredicateOnProp, equalityPredicateOnProp} from "./FuncUtils";
+import {eq} from "lodash";
 
 /**
  * @param arr Array to remove duplicates on.
@@ -25,9 +26,10 @@ export function duplicateCheck<T>(arr: readonly T[]) {
             const duplicates: T[] = [];
             const nonDuplicates: T[] = [];
             arr.forEach(a => {
-                const alreadyExists = nonDuplicates.some(equalityByCallback(a));
-                if (alreadyExists) {
-                    duplicates.push(a);
+                if (nonDuplicates.some(equalityByCallback(a))) {
+                    if (!duplicates.some(equalityByCallback(a))) {
+                        duplicates.push(a);
+                    }
                 } else {
                     nonDuplicates.push(a);
                 }
