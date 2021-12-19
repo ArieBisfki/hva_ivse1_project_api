@@ -2,7 +2,7 @@ import {Result} from "../FailOrSuccess";
 
 export type BiPredicate<Model> = (m1: Model, m2: Model) => boolean;
 export type Predicate<Model> = (model: Model) => boolean;
-export type KeyValueTuple<Model> = [keyof Model, Model[keyof Model]]
+export type KeyValueTuple<Model> = keyof Model extends infer T ? T extends keyof Model ? [T, Model[T]] : never : never;
 
 type R<S, F> = Result<S, F>;
 
@@ -22,12 +22,12 @@ export default interface ICRUDUtil {
     filter<Model>(config: {
         models: Model[],
         filterBy: Predicate<Model>
-    }): Promise<Model[] | undefined>;
+    }): Promise<Model[]>;
 
     update<Model, NotFoundError>(config: {
         models: Model[],
         toUpdate: Model,
-        equalityBy: keyof Model | BiPredicate<Model>,
+        findBy: KeyValueTuple<Model> | Predicate<Model>,
         notFoundError: NotFoundError
     }): Promise<R<Model, NotFoundError>>;
 

@@ -50,7 +50,7 @@ export default class WorkoutLogRepositoryInMem implements IWorkoutLogRepository 
         return this.crudUtil.update({
             models: this.workoutLogs,
             toUpdate: workoutLog,
-            equalityBy: "id",
+            findBy: ["id", workoutLog.id],
             notFoundError: E.NOT_FOUND
         });
     }

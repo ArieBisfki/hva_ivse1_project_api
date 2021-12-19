@@ -48,25 +48,27 @@ export default class CRUDUtilInMem implements ICRUDUtil {
     async filter<Model>({models, filterBy}: {
         models: Model[],
         filterBy: Predicate<Model>
-    }): Promise<Model[] | undefined> {
+    }): Promise<Model[]> {
         return models.filter(filterBy);
     }
 
     update<Model, NotFoundError>({
                                      models,
                                      toUpdate,
-                                     equalityBy: equalityByUnion,
+                                     findBy,
                                      notFoundError
                                  }: {
         models: Model[],
         toUpdate: Model,
-        equalityBy: keyof Model | BiPredicate<Model>,
+        findBy: KeyValueTuple<Model> | Predicate<Model>,
         notFoundError: NotFoundError
     }): Promise<R<Model, NotFoundError>> {
         return exec((resolve, err) => {
-            const equalityByFn = this.equalityByUnionToFn(equalityByUnion);
+            const findByFn = typeof findBy === "function"
+                ? findBy
+                : (model: Model) => model[findBy[0]] === findBy[1]
 
-            const indexOfExistingModel = models.findIndex(m => equalityByFn(m, toUpdate));
+            const indexOfExistingModel = models.findIndex(m => findByFn(m));
             if (indexOfExistingModel === -1) {
                 return err(notFoundError);
             }

@@ -68,7 +68,7 @@ export default class ExerciseRepositoryInMem implements IExerciseRepository {
         return this.crudUtil.update({
             models: this.exercises,
             toUpdate: exercise,
-            equalityBy: "id",
+            findBy: ["id", exercise.id],
             notFoundError: E.NOT_FOUND
         })
     }

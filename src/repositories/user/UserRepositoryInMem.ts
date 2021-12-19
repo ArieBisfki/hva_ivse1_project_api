@@ -41,7 +41,7 @@ export default class UserRepositoryInMem implements IUserRepository {
         return this.crudUtil.update({
             models: this.users,
             toUpdate: user,
-            equalityBy: "id",
+            findBy: ["id", user.id],
             notFoundError: E.NOT_FOUND
         })
     }

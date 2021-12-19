@@ -38,7 +38,7 @@ export default class ExerciseCategoryRepositoryInMem implements IExerciseCategor
         return this.crudUtil.update({
             models: this.exerciseCategories,
             toUpdate: exerciseCategory,
-            equalityBy: "id",
+            findBy: ["id", exerciseCategory.id],
             notFoundError: E.NOT_FOUND
         })
     }
