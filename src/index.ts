@@ -3,7 +3,6 @@ import http from 'http';
 import morgan from 'morgan';
 import express from 'express';
 import routes from './routes/routes';
-import "./augmentations/tsyringe";
 import setupEnv from "./utils/env";
 
 setupEnv();

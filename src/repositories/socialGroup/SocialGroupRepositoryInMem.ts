@@ -35,7 +35,6 @@ export const socialGroupsInit: SocialGroup[] = [
 
 export default class SocialGroupRepositoryInMem implements ISocialGroupRepository{
 
-    private readonly users = Object.values(users) as User[];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
     private socialGroups: SocialGroup[] = [...socialGroupsInit];
@@ -67,7 +66,7 @@ export default class SocialGroupRepositoryInMem implements ISocialGroupRepositor
         return this.crudUtil.update({
             models: this.socialGroups,
             toUpdate: socialGroup,
-            equalityBy: "id",
+            findBy: ["id", socialGroup.id],
             notFoundError: E.NOT_FOUND
         });
     }

@@ -51,14 +51,14 @@ export default class ExercisesBySocialGroupRepoInMem implements ISocialGroupExer
 
     private readonly exercisesBySocialGroups: ExercisesBySocialGroup[] = [
         {
-            socialGroup: socialGroupsInit[0],
+            socialGroup: socialGroupsInit[0]!,
             exercises: [
                 exercisesInit["Bench Press"],
                 exercisesInit["Squat"]
             ]
         },
         {
-            socialGroup: socialGroupsInit[1],
+            socialGroup: socialGroupsInit[1]!,
             exercises: Object.values(exercisesInit)
         }
     ];
@@ -113,7 +113,7 @@ export default class ExercisesBySocialGroupRepoInMem implements ISocialGroupExer
                         socialGroup: socialGroupModel,
                         exercises: updatedExercises
                     },
-                    equalityBy: (a, b) => a.socialGroup.id === b.socialGroup.id,
+                    findBy: ({socialGroup: {id}}) => id === socialGroupModel.id,
                     notFoundError: E.NOT_FOUND
                 });
                 if (resultIsFail(updateResult)) {
@@ -143,7 +143,7 @@ export default class ExercisesBySocialGroupRepoInMem implements ISocialGroupExer
 
             const deletedExercises: Exercise[] = [];
             exercisesBySocialGroup.exercises = exercisesBySocialGroup.exercises.filter(exercise => {
-                const shouldBeKept = !exerciseIdsToDelete.includes(exercise.id);
+                const shouldBeKept = !exerciseIdsToDelete.includes(exercise.id!);
 
                 // Side effect
                 if (!shouldBeKept) {

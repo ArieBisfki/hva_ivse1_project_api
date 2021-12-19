@@ -84,7 +84,7 @@ describe("CRUDUtil", () => {
         const createResult = [
             await crudUtil.create(createConfig),
             await crudUtil.create(createConfig)
-        ];
+        ] as const;
 
         if (resultIsFail(createResult[0])) {
             fail();

@@ -1,10 +1,6 @@
-import {registry} from "tsyringe";
-import ExerciseRepository from "../repositories/userExercise/IExerciseRepository";
-import WorkoutLogRepository from "../repositories/workoutLog/IWorkoutLogRepository";
+import {InjectionToken, registry} from "tsyringe";
 import ExerciseRepositoryInMem from "../repositories/userExercise/UserExerciseRepositoryInMem";
-import objectFromTuple from "../utils/objectFromTuple";
 import WorkoutLogRepositoryInMem from "../repositories/workoutLog/WorkoutLogRepositoryInMem";
-import ExerciseCategoryRepository from "../repositories/exerciseCategory/IExerciseCategoryRepository";
 import ExerciseCategoryRepositoryInMem from "../repositories/exerciseCategory/ExerciseCategoryRepositoryInMem";
 import AbstractAuthTokenService from "../auth/AbstractAuthTokenService";
 import {AuthTokenService} from "../auth/AuthTokenService";
@@ -16,32 +12,20 @@ import SocialGroupRepositoryInMem from "../repositories/socialGroup/SocialGroupR
 import ISocialGroupRepository from "../repositories/socialGroup/ISocialGroupRepository";
 import IUserRefreshTokenRepository from "../repositories/userRefreshTokens/IUserRefreshTokenRepository";
 import UserRefreshTokenRepositoryInMem from "../repositories/userRefreshTokens/UserRefreshTokenRepositoryInMem";
+import IExerciseRepository from "../repositories/userExercise/IExerciseRepository";
+import IWorkoutLogRepository from "../repositories/workoutLog/IWorkoutLogRepository";
+import IExerciseCategoryRepository from "../repositories/exerciseCategory/IExerciseCategoryRepository";
 
-export const DI_TOKEN = Object.freeze(objectFromTuple([
-    "ExerciseRepository",
-    "WorkoutLogRepository",
-    "ExerciseCategoryRepository",
-    "UserRepository",
-    "SocialGroupRepository",
-    "AuthTokenService",
-    "CRUDUtilInMem",
-    "UserRefreshTokenRepository"
-] as const));
-
-/**
- * Warning: no compiler check for whether these provided values match with the actual provided values inside
- * the registry registrations.
- */
-export type DITokenProviderMap = {
-    ExerciseRepository: ExerciseRepository,
-    WorkoutLogRepository: WorkoutLogRepository,
-    ExerciseCategoryRepository: ExerciseCategoryRepository,
-    UserRepository: IUserRepository,
-    SocialGroupRepository: ISocialGroupRepository,
-    AuthTokenService: AbstractAuthTokenService,
-    CRUDUtilInMem: ICRUDUtil,
-    UserRefreshTokenRepository: IUserRefreshTokenRepository
-};
+export const DI_TOKEN = Object.freeze({
+    "ExerciseRepository": Symbol() as InjectionToken<IExerciseRepository>,
+    "WorkoutLogRepository": Symbol() as InjectionToken<IWorkoutLogRepository>,
+    "ExerciseCategoryRepository": Symbol() as InjectionToken<IExerciseCategoryRepository>,
+    "UserRepository": Symbol() as InjectionToken<IUserRepository>,
+    "SocialGroupRepository": Symbol() as InjectionToken<ISocialGroupRepository>,
+    "AuthTokenService": Symbol() as InjectionToken<AbstractAuthTokenService>,
+    "CRUDUtilInMem": Symbol() as InjectionToken<ICRUDUtil>,
+    "UserRefreshTokenRepository": Symbol() as InjectionToken<IUserRefreshTokenRepository>
+});
 
 @registry([
     {token: DI_TOKEN.ExerciseRepository, useClass: ExerciseRepositoryInMem},
