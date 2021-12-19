@@ -1,7 +1,4 @@
-export class ExerciseCategory {
-
-    constructor(
-        readonly id: number,
-        readonly name: string
-    ) {}
+export interface ExerciseCategory {
+    readonly id?: number;
+    readonly name: string;
 }

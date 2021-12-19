@@ -1,4 +1,4 @@
-import {AddExerciseCategoryRequestHandler, DeleteExerciseCategoryRequestHandler, UpdateExerciseCategoryRequestHandler} from "../models/endpoint/ExerciseCategory";
+import {AddExerciseCategoryRequestHandler, DeleteExerciseCategoryRequestHandler, UpdateExerciseCategoryRequestHandler} from "../models/endpoint/exercise-category";
 import { container } from "tsyringe";
 import { DI_TOKEN } from "../di/Registry";
 import {resultIsFail} from "../utils/FailOrSuccess";
