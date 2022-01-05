@@ -4,6 +4,7 @@ import {constants} from "http2";
 import {container} from "tsyringe";
 import {DI_TOKEN} from "../di/Registry";
 import AbstractAuthTokenService from "./AbstractAuthTokenService";
+import {resultIsFail} from "../utils/FailOrSuccess";
 
 function sendUnauthorized(res: Response<any, any>): void {
     res.status(constants.HTTP_STATUS_UNAUTHORIZED)
@@ -32,8 +33,8 @@ export default function protectedRoute(actualRequestHandler: RequestHandler<any,
 
         const token = parts[1]!;
 
-        const wasVerified = !!(await authTokenService.verifyAndExtractPayload(token, AbstractAuthTokenService.TokenType.ACCESS_TOKEN));
-        if (!wasVerified) {
+        const wasVerified = await authTokenService.verifyAndExtractPayload(token, AbstractAuthTokenService.TokenType.ACCESS_TOKEN);
+        if (resultIsFail(wasVerified)) {
             return sendUnauthorized(res);
         }
 

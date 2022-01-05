@@ -34,7 +34,7 @@ export default abstract class AbstractAuthTokenService {
         });
 
         static REFRESH_TOKEN = new (this)({
-            expiresIn: "1h",
+            expiresIn: "14d",
             secret: () => process.env.REFRESH_TOKEN_SECRET!
         });
 
@@ -120,5 +120,5 @@ export default abstract class AbstractAuthTokenService {
 
     protected abstract generateToken(userId: number, tokenType: TokenType): Promise<string | undefined>;
 
-    protected abstract verifyAndExtractPayload(token: string, tokenType: TokenType): Promise<Result<Payload, E["VALIDATION"] | E["INVALID_PAYLOAD"]>>;
+    abstract verifyAndExtractPayload(token: string, tokenType: TokenType): Promise<Result<Payload, E["VALIDATION"] | E["INVALID_PAYLOAD"]>>;
 }
