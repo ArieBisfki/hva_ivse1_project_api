@@ -11,7 +11,7 @@ type E = typeof E;
 type R<S, F> = Result<S, F>;
 
 export default class UserRepositoryInMem implements IUserRepository {
-    private readonly users = Object.values(users);
+    private readonly users = [users.Arie];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
     private idCounter = this.users.length;
 

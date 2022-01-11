@@ -1,4 +1,4 @@
-import {InjectionToken, registry} from "tsyringe";
+import {InjectionToken, Lifecycle, registry} from "tsyringe";
 import ExerciseRepositoryInMem from "../repositories/userExercise/UserExerciseRepositoryInMem";
 import WorkoutLogRepositoryInMem from "../repositories/workoutLog/WorkoutLogRepositoryInMem";
 import ExerciseCategoryRepositoryInMem from "../repositories/exerciseCategory/ExerciseCategoryRepositoryInMem";
@@ -36,5 +36,5 @@ export const DI_TOKEN = Object.freeze({
     {token: DI_TOKEN.AuthTokenService, useClass: AuthTokenService},
     {token: DI_TOKEN.CRUDUtilInMem, useClass: CRUDUtilInMem},
     {token: DI_TOKEN.UserRefreshTokenRepository, useClass: UserRefreshTokenRepositoryInMem}
-])
+].map(registration => ({...registration, options: {lifecycle: Lifecycle.Singleton}})))
 export default class Registry {}

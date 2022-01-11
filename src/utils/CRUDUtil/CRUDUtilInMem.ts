@@ -24,8 +24,8 @@ export default class CRUDUtilInMem implements ICRUDUtil {
         return exec((resolve, err) => {
             const equalityByFn = this.equalityByUnionToFn(equalityByUnion);
 
-            const existingModel = models.find(m => equalityByFn(m, toCreate));
-            if (existingModel) {
+            const modelAlreadyExists = models.some(m => equalityByFn(m, toCreate));
+            if (modelAlreadyExists) {
                 return err(duplicateError);
             }
 
