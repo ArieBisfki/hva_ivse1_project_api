@@ -10,7 +10,7 @@ describe('testing exercise category in memory database', () =>{
 
     //Assign default values
     beforeEach(() => {
-        console.debug("VALUESSSSSS" + exerciseCategoriesInit);
+        console.log("VALUESSSSSS" + exerciseCategoriesInit);
         exerciseCategoryRepositoryInMem = new ExerciseCategoryRepositoryInMem;
         exerciseCategoryRepositoryInMem['exerciseCategories'] = Object.values(exerciseCategoriesInit);
     });

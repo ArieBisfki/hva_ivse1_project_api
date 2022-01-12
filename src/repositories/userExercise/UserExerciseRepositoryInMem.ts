@@ -6,41 +6,12 @@ import {exerciseCategoriesInit} from "../exerciseCategory/ExerciseCategoryReposi
 import {container} from "tsyringe";
 import {DI_TOKEN} from "../../di/Registry";
 import * as users from "../../data/users.json";
+import { exercisesInit } from "../exercisesBySocialGroup/ExercisesBySocialGroupRepoInMem";
 
 const E = ExerciseRepositoryError;
 type E = typeof E;
 type R<S, F> = Result<S, F>;
 
-export const exercisesInit = (() => {
-    const BENCH_PRESS = "Bench Press";
-    const SQUAT = "Squat";
-    const RUNNING = "Running";
-
-
-    const benchPressExercise: Exercise = {
-        id: 1,
-        name: BENCH_PRESS,
-        category: exerciseCategoriesInit["Push"]
-    };
-
-    const squatExercise: Exercise = {
-        id: 2,
-        name: SQUAT,
-        category: exerciseCategoriesInit["Lower Body"]
-    };
-
-    const runningExercise: Exercise = {
-        id: 3,
-        name: RUNNING,
-        category: exerciseCategoriesInit.Cardio
-    };
-
-    return {
-        [BENCH_PRESS]: benchPressExercise,
-        [SQUAT]: squatExercise,
-        [RUNNING]: runningExercise
-    };
-})();
 
 export default class ExerciseRepositoryInMem implements IExerciseRepository {
     private readonly exercises: Exercise[] = Object.values(exercisesInit);

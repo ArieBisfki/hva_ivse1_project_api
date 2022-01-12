@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import express from 'express';
 import routes from './routes/routes';
 import setupEnv from "./utils/env";
+import inMemRepos from "./utils/InitUtil/inMemRepos";
 
 setupEnv();
 
@@ -41,3 +42,4 @@ const httpServer = http.createServer(router);
 const PORT: any = process.env.PORT ?? 6060;
 httpServer.listen(PORT, () => console.log(`The server is running on port ${PORT}...`));
 
+const inMemReposInit = new inMemRepos();

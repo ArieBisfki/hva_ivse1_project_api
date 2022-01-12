@@ -4,10 +4,10 @@ import IWorkoutLogRepository from "./IWorkoutLogRepository";
 import WorkoutLogRepositoryError  from "./WorkoutLogRepositoryError";
 import {ResistanceExerciseLog} from "../../models/workout/ResistanceExerciseLog";
 import {CardioExerciseLog} from "../../models/workout/CardioExerciseLog";
-import {exercisesInit} from "../userExercise/UserExerciseRepositoryInMem";
 import {container} from "tsyringe";
 import {DI_TOKEN} from "../../di/Registry";
 import * as users from "../../data/users.json";
+import { exercisesInit } from "../exercisesBySocialGroup/ExercisesBySocialGroupRepoInMem";
 
 const E = WorkoutLogRepositoryError;
 type E = typeof E;
