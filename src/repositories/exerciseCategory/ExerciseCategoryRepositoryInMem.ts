@@ -2,7 +2,8 @@ import {exec, Result} from "../../utils/FailOrSuccess";
 import ExerciseCategoryRepositoryError  from "./ExerciseCategoryRepositoryError";
 import IExerciseCategoryRepository from "./IExerciseCategoryRepository";
 import {ExerciseCategory} from "../../models/workout/ExerciseCategory";
-import {container} from "tsyringe";
+import "reflect-metadata"
+import {container } from "tsyringe";
 import {DI_TOKEN} from "../../di/Registry";
 
 const E = ExerciseCategoryRepositoryError;
@@ -31,7 +32,9 @@ export const exerciseCategoriesInit = (() => {
 })();
 
 export default class ExerciseCategoryRepositoryInMem implements IExerciseCategoryRepository {
-    private readonly exerciseCategories = Object.values(exerciseCategoriesInit);
+
+
+    private exerciseCategories = <ExerciseCategory[]> Object.values(exerciseCategoriesInit);
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
     create(exerciseCategory: ExerciseCategory): Promise<R<ExerciseCategory, E["DUPLICATE"]>> {

@@ -16,10 +16,11 @@ export const exercisesInit = (() => {
     const SQUAT = "Squat";
     const RUNNING = "Running";
 
+
     const benchPressExercise: Exercise = {
         id: 1,
         name: BENCH_PRESS,
-        category: exerciseCategoriesInit.Push
+        category: exerciseCategoriesInit["Push"]
     };
 
     const squatExercise: Exercise = {
