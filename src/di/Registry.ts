@@ -12,15 +12,22 @@ import SocialGroupRepositoryInMem from "../repositories/socialGroup/SocialGroupR
 import ISocialGroupRepository from "../repositories/socialGroup/ISocialGroupRepository";
 import IUserRefreshTokenRepository from "../repositories/userRefreshTokens/IUserRefreshTokenRepository";
 import UserRefreshTokenRepositoryInMem from "../repositories/userRefreshTokens/UserRefreshTokenRepositoryInMem";
-import IExerciseRepository from "../repositories/userExercise/IExerciseRepository";
+import IUserExerciseRepository from "../repositories/userExercise/IUserExerciseRepository";
 import IWorkoutLogRepository from "../repositories/workoutLog/IWorkoutLogRepository";
 import IExerciseCategoryRepository from "../repositories/exerciseCategory/IExerciseCategoryRepository";
+import {Registration} from "tsyringe/dist/typings/dependency-container";
+import IExercisesBySocialGroupRepository
+    from "../repositories/exercisesBySocialGroup/IExercisesBySocialGroupRepository";
+import ExercisesBySocialGroupRepoInMem from "../repositories/exercisesBySocialGroup/ExercisesBySocialGroupRepoInMem";
+import UserExerciseRepositoryInMem from "../repositories/userExercise/UserExerciseRepositoryInMem";
 
 export const DI_TOKEN = Object.freeze({
-    "ExerciseRepository": Symbol() as InjectionToken<IExerciseRepository>,
+    "ExerciseRepository": Symbol() as InjectionToken<IUserExerciseRepository>,
     "WorkoutLogRepository": Symbol() as InjectionToken<IWorkoutLogRepository>,
     "ExerciseCategoryRepository": Symbol() as InjectionToken<IExerciseCategoryRepository>,
+    "ExercisesBySocialGroupRepository": Symbol() as InjectionToken<IExercisesBySocialGroupRepository>,
     "UserRepository": Symbol() as InjectionToken<IUserRepository>,
+    "UserExerciseRepository": Symbol() as InjectionToken<IUserExerciseRepository>,
     "SocialGroupRepository": Symbol() as InjectionToken<ISocialGroupRepository>,
     "AuthTokenService": Symbol() as InjectionToken<AbstractAuthTokenService>,
     "CRUDUtilInMem": Symbol() as InjectionToken<ICRUDUtil>,
@@ -31,7 +38,9 @@ export const DI_TOKEN = Object.freeze({
     {token: DI_TOKEN.ExerciseRepository, useClass: ExerciseRepositoryInMem},
     {token: DI_TOKEN.WorkoutLogRepository, useClass: WorkoutLogRepositoryInMem},
     {token: DI_TOKEN.ExerciseCategoryRepository, useClass: ExerciseCategoryRepositoryInMem},
+    {token: DI_TOKEN.ExercisesBySocialGroupRepository, useClass: ExercisesBySocialGroupRepoInMem},
     {token: DI_TOKEN.UserRepository, useClass: UserRepositoryInMem},
+    {token: DI_TOKEN.UserExerciseRepository, useClass: UserExerciseRepositoryInMem},
     {token: DI_TOKEN.SocialGroupRepository, useClass: SocialGroupRepositoryInMem},
     {token: DI_TOKEN.AuthTokenService, useClass: AuthTokenService},
     {token: DI_TOKEN.CRUDUtilInMem, useClass: CRUDUtilInMem},

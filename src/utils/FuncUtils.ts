@@ -2,6 +2,7 @@
  * @author Arie Bisfki
  * Contains handy utilities for working with functions.
  */
+import Only from "./Only";
 
 export function equalityBiPredicateOnProp<T>(property: keyof T): (a: T, b: T) => boolean {
     return (a, b) => a[property] === b[property];
@@ -32,3 +33,12 @@ export function equalityByFn<T, U>(equalityBy: EqualityBy<T, U> = equalityByEqua
 }
 
 export type Fn<Args extends any[] = any[], Return = any> = (...args: Args) => Return;
+
+export function IIFE<T extends Fn>(fn: T): ReturnType<T> {
+    return fn();
+}
+
+export function fnBind<Target extends {}, Key extends keyof Only<Target, Fn>>(target: Target, key: Key): Target[Key] {
+    return (target[key] as Fn).bind(target) as any;
+}
+

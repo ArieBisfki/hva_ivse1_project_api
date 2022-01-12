@@ -4,10 +4,8 @@ import {SocialGroup} from "../../models/social/SocialGroup";
 import ExercisesBySocialGroup from "../../models/social/ExercisesBySocialGroup";
 import {Exercise} from "../../models/workout/Exercise";
 import {exec, Result, resultIsFail} from "../../utils/FailOrSuccess";
-import {exerciseCategoriesInit} from "../exerciseCategory/ExerciseCategoryRepositoryInMem";
 import ISocialGroupExerciseRepository from "./IExercisesBySocialGroupRepository";
 import ExercisesBySocialGroupRepositoryError from "./ExercisesBySocialGroupRepositoryError";
-import {socialGroupsInit} from "../socialGroup/SocialGroupRepositoryInMem";
 import {arrayMinus, concatWithoutDuplicates, duplicateCheck} from "../../utils/ArrayUtils";
 import {equalityBiPredicateOnProp, equalityPredicateOnProp} from "../../utils/FuncUtils";
 
@@ -15,53 +13,11 @@ const E = ExercisesBySocialGroupRepositoryError;
 type E = typeof E;
 type R<S, F> = Result<S, F>;
 
-export const exercisesInit = (() => {
-    const BENCH_PRESS = "Bench Press";
-    const SQUAT = "Squat";
-    const RUNNING = "Running";
-
-    const benchPressExercise: Exercise = {
-        id: 1,
-        name: BENCH_PRESS,
-        category: exerciseCategoriesInit.Push
-    };
-
-    const squatExercise: Exercise = {
-        id: 2,
-        name: SQUAT,
-        category: exerciseCategoriesInit["Lower Body"]
-    };
-
-    const runningExercise: Exercise = {
-        id: 3,
-        name: RUNNING,
-        category: exerciseCategoriesInit.Cardio
-    };
-
-    return {
-        [BENCH_PRESS]: benchPressExercise,
-        [SQUAT]: squatExercise,
-        [RUNNING]: runningExercise
-    };
-})();
-
 export default class ExercisesBySocialGroupRepoInMem implements ISocialGroupExerciseRepository {
 
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
-    private readonly exercisesBySocialGroups: ExercisesBySocialGroup[] = [
-        {
-            socialGroup: socialGroupsInit[0]!,
-            exercises: [
-                exercisesInit["Bench Press"],
-                exercisesInit["Squat"]
-            ]
-        },
-        {
-            socialGroup: socialGroupsInit[1]!,
-            exercises: Object.values(exercisesInit)
-        }
-    ];
+    private readonly exercisesBySocialGroups: ExercisesBySocialGroup[] = [];
 
     private readonly socialGroupRepository = container.resolve(DI_TOKEN.SocialGroupRepository);
 

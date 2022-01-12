@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import express from 'express';
 import routes from './routes/routes';
 import setupEnv from "./utils/env";
+import "./populateInMemDb";
 
 setupEnv();
 
