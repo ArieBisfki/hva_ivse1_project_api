@@ -16,6 +16,19 @@ describe('testing social group in memory database', () =>{
 
     });
 
+    test("get all social groups of user by userId", async ()=>{
+        const socialGroups = await socialGroup.getByUserId(1);
+
+        expect(socialGroups.length).toEqual(3)
+    });
+
+    test("get group by id", async () => {
+        const socialGroup1 = await socialGroup.getByGroupId(1);
+
+        expect(socialGroup1).not.toBeUndefined();
+        expect(socialGroup1?.id).toEqual(1);
+    });
+
     test("creating a new socialGroup ", async () => {
        
         let logs = await workoutLogs.get(0);
