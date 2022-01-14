@@ -22,7 +22,7 @@ export default class UserExerciseRepositoryInMem implements IUserExerciseReposit
         });
     }
 
-    // Voorlopige implementatie, get all exercises voor deze user
+    // current implementation, get all exercises for this user
     get(): Promise<Exercise[] | undefined> {
         return this.crudUtil.filter({
             models: this.exercises,
