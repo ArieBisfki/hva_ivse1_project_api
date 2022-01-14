@@ -1,20 +1,16 @@
 import {Exercise} from "../../models/workout/Exercise";
 import {exec, Result} from "../../utils/FailOrSuccess";
-import IExerciseRepository from "./IExerciseRepository";
-import ExerciseRepositoryError from "./ExerciseRepositoryError";
-import {exerciseCategoriesInit} from "../exerciseCategory/ExerciseCategoryRepositoryInMem";
+import IUserExerciseRepository from "./IUserExerciseRepository";
+import UserExerciseRepositoryError from "./UserExerciseRepositoryError";
 import {container} from "tsyringe";
 import {DI_TOKEN} from "../../di/Registry";
-import * as users from "../../data/users.json";
-import { exercisesInit } from "../exercisesBySocialGroup/ExercisesBySocialGroupRepoInMem";
 
-const E = ExerciseRepositoryError;
+const E = UserExerciseRepositoryError;
 type E = typeof E;
 type R<S, F> = Result<S, F>;
 
-
-export default class ExerciseRepositoryInMem implements IExerciseRepository {
-    private readonly exercises: Exercise[] = Object.values(exercisesInit);
+export default class UserExerciseRepositoryInMem implements IUserExerciseRepository {
+    private readonly exercises: Exercise[] = [];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
 
     create(exercise: Exercise): Promise<R<Exercise, E["DUPLICATE"]>> {

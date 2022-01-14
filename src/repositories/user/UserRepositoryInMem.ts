@@ -4,14 +4,13 @@ import UserRepositoryError from "./UserRepositoryError";
 import User from "../../models/User";
 import {container} from "tsyringe";
 import {DI_TOKEN} from "../../di/Registry";
-import * as users from "../../data/users.json";
 
 const E = UserRepositoryError;
 type E = typeof E;
 type R<S, F> = Result<S, F>;
 
 export default class UserRepositoryInMem implements IUserRepository {
-    private readonly users = [users.Arie];
+    private readonly users: User[] = [];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
     private idCounter = this.users.length;
 

@@ -5,6 +5,7 @@ import express from 'express';
 import routes from './routes/routes';
 import setupEnv from "./utils/env";
 import inMemRepos from "./utils/InitUtil/inMemRepos";
+import "./populateInMemDb";
 
 setupEnv();
 
