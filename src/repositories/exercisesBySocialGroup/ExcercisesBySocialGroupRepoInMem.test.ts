@@ -1,55 +1,65 @@
-import exercise from "../../controller/exercise";
+import { container } from "tsyringe";
+import { DI_TOKEN } from "../../di/Registry";
 import { Exercise } from "../../models/workout/Exercise";
-import { exerciseCategoriesInit } from "../exerciseCategory/ExerciseCategoryRepositoryInMem";
-import { socialGroupsInit } from "../socialGroup/SocialGroupRepositoryInMem";
-import ExercisesBySocialGroupRepoInMem, { exercisesInit } from "./ExercisesBySocialGroupRepoInMem";
+import ExerciseCategoryRepositoryInMem from "../exerciseCategory/ExerciseCategoryRepositoryInMem";
+import ExercisesBySocialGroupRepoInMem from "./ExercisesBySocialGroupRepoInMem";
+
 
 describe('testing social group in memory database', () =>{
 
-    let excercisesBySocialGroup: ExercisesBySocialGroupRepoInMem;
+    let exercisesBySocialGroup: ExercisesBySocialGroupRepoInMem;
+    const exerciseCategory = <ExerciseCategoryRepositoryInMem> container.resolve(DI_TOKEN.ExerciseCategoryRepository);
+
+
 
     beforeEach(() => {
-        excercisesBySocialGroup = new ExercisesBySocialGroupRepoInMem;
+        exercisesBySocialGroup = <ExercisesBySocialGroupRepoInMem>container.resolve(DI_TOKEN.ExercisesBySocialGroupRepository)
     });
 
-    test("Adding a new excercise to a socialGroupExcercise", () => {
+    test("Adding a new excercise to a socialGroupExcercise", async () => {
 
-        // This social group only has the excercises 'bench press' and 'squats' before adding running
-        excercisesBySocialGroup.create(socialGroupsInit[0]!, Array.of(exercisesInit.Running));
+        const excerciseSocialGroup0 = await exercisesBySocialGroup.get(0);
+
+        if(excerciseSocialGroup0)
+        exercisesBySocialGroup.create(
+            excerciseSocialGroup0.socialGroup,[
+            {
+            id: 9,
+            name: "Sprinting",
+            category: exerciseCategory['exerciseCategories'].find(c => c.name === "Cardio")!
+            }]
+        );
         
 
-        expect(excercisesBySocialGroup
-            .get(socialGroupsInit[0]?.id!)
-            .then((s) => {return s?.exercises}))
-        .toContain(exercisesInit.Running);
+        expect(excerciseSocialGroup0?.exercises.find(e => e.name === "Sprinting")).not.toBeUndefined();
         
     });
 
-    test("updating an existing workout to a socialGroupExcercise object", () => {
+    test("updating an existing workout to a socialGroupExcercise object", async () => {
 
         const TEST_NAME = "test name";
+        const excerciseSocialGroup0 = await exercisesBySocialGroup.get(0);
         
         const benchPressExercise: Exercise = {
             id: 1,
             name: TEST_NAME,
-            category: exerciseCategoriesInit.Push
+            category: exerciseCategory['exerciseCategories'].find(c => c.name === "Cardio")!
         };
     
-        excercisesBySocialGroup.create(socialGroupsInit[0]!, Array.of(benchPressExercise));
+        if(excerciseSocialGroup0)
+        exercisesBySocialGroup.create(excerciseSocialGroup0.socialGroup, [benchPressExercise]);
         
 
         // Same workout but with different name
-        expect(excercisesBySocialGroup
-            .get(socialGroupsInit[0]?.id!)
-            .then((s) => {return s?.exercises.filter(s => s.id === 1).find.name}))
-        .toEqual(TEST_NAME);
+        expect(excerciseSocialGroup0?.exercises.find(e => e.id === 9)?.name).toEqual("test name");
     });
 
-    test("Deleting all excercises from socialGroupExcercise", () => {
-        
-        excercisesBySocialGroup.delete(0,0,1,2);
+    test("Deleting all excercises from socialGroupExcercise", async () => {
+        const excerciseSocialGroup0 = await exercisesBySocialGroup.get(0);
 
-        expect(excercisesBySocialGroup.get(0).then(e => e?.exercises.length)).toEqual(0);
+        exercisesBySocialGroup.delete(0,0,1,2);
+
+        expect(excerciseSocialGroup0?.exercises.length).toEqual(0);
 
     });
 

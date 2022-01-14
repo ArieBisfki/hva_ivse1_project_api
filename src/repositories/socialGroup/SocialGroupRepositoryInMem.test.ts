@@ -1,41 +1,49 @@
-import SocialGroupRepositoryInMem, { socialGroupsInit } from "./SocialGroupRepositoryInMem";
 import * as users from "../../data/users.json";
-import { workoutLogsInit } from "../workoutLog/WorkoutLogRepositoryInMem";
-import workoutLog from "../../controller/workout-log";
-import { SocialGroup } from "../../models/social/SocialGroup";
+import ISocialGroupRepository from "./ISocialGroupRepository";
+import SocialGroupRepositoryInMem from "./SocialGroupRepositoryInMem";
+import { container } from "tsyringe";
+import { DI_TOKEN } from "../../di/Registry";
+import WorkoutLogRepositoryInMem from "../workoutLog/WorkoutLogRepositoryInMem";
 
 
 describe('testing social group in memory database', () =>{
 
-    let socialGroupRepositoryInMem : SocialGroupRepositoryInMem;
+    let socialGroup : ISocialGroupRepository;
+    const workoutLogs = <WorkoutLogRepositoryInMem>container.resolve(DI_TOKEN.WorkoutLogRepository);
     
     beforeEach(() => {
-        socialGroupRepositoryInMem = new SocialGroupRepositoryInMem;
+        socialGroup = <SocialGroupRepositoryInMem>container.resolve(DI_TOKEN.SocialGroupRepository);
+
     });
 
-    test("creating a new socialGroup ", () => {
+    test("creating a new socialGroup ", async () => {
        
-        socialGroupRepositoryInMem.create({
+        let logs = await workoutLogs.get(0);
+        const socialGroup4 = await socialGroup.getByGroupId(4);
+
+        if(logs)
+        socialGroup.create({
             users: [users.Arie],
             id: 4,
             name: "socialgroup4",
-            workoutLogs: workoutLogsInit
+            workoutLogs: logs
         });
         
-        expect(socialGroupRepositoryInMem.getByGroupId(4).then(g => g)).not.toBeNull();
+        expect(socialGroup4).not.toBeUndefined();
 
     });
 
     test("update an existing socialGroup", async () => {
 
-        socialGroupRepositoryInMem.update({
+
+        socialGroup.update({
                 users: [],
                 id: 4,
                 name: "updatedSocialgroup4",
                 workoutLogs: []
             });
 
-            let updatedSocialgroup4 = await socialGroupRepositoryInMem.getByGroupId(4);
+            let updatedSocialgroup4 = await socialGroup.getByGroupId(4);
 
             if(typeof updatedSocialgroup4 !== "undefined")
             expect(updatedSocialgroup4.name).toEqual("updatedSocialgroup4");
@@ -44,9 +52,11 @@ describe('testing social group in memory database', () =>{
 
     test("delete a socialGroup", async () => {
 
-        socialGroupRepositoryInMem.delete(4);
+        const socialGroup4 = await socialGroup.getByGroupId(4);
+
+        socialGroup.delete(4);
         
-        expect(await socialGroupRepositoryInMem.getByGroupId(4)).toBeUndefined();
+        expect(socialGroup4).toBeUndefined();
     });
 
 });

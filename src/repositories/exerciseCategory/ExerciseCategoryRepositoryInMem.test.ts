@@ -1,23 +1,24 @@
 import e from "express";
+import { container } from "tsyringe";
 import exerciseCategory from "../../controller/exercise-category";
+import { DI_TOKEN } from "../../di/Registry";
 import { ExerciseCategory } from "../../models/workout/ExerciseCategory";
-import ExerciseCategoryRepositoryInMem, { exerciseCategoriesInit } from "./ExerciseCategoryRepositoryInMem"
+import ExerciseCategoryRepositoryInMem from "./ExerciseCategoryRepositoryInMem";
+import IExerciseCategoryRepository from "./IExerciseCategoryRepository";
 
 
 describe('testing exercise category in memory database', () =>{
     
-    let exerciseCategoryRepositoryInMem : ExerciseCategoryRepositoryInMem;
+    let exerciseCategory : ExerciseCategoryRepositoryInMem; 
 
     //Assign default values
     beforeEach(() => {
-        console.log("VALUESSSSSS" + exerciseCategoriesInit);
-        exerciseCategoryRepositoryInMem = new ExerciseCategoryRepositoryInMem;
-        exerciseCategoryRepositoryInMem['exerciseCategories'] = Object.values(exerciseCategoriesInit);
+        exerciseCategory = <ExerciseCategoryRepositoryInMem> container.resolve(DI_TOKEN.ExerciseCategoryRepository);
     });
 
     test("Adding a new workoutCategory", () => {
 
-        let id = ++exerciseCategoryRepositoryInMem['exerciseCategories'].length;
+        let id = exerciseCategory['exerciseCategories'].length;
 
         let newExerciseCategory: ExerciseCategory = {
             id: id,
@@ -25,10 +26,10 @@ describe('testing exercise category in memory database', () =>{
         }
 
         if(newExerciseCategory !== undefined)
-        exerciseCategoryRepositoryInMem.create(newExerciseCategory);
+        exerciseCategory.create(newExerciseCategory);
         else return;
 
-        expect(exerciseCategoryRepositoryInMem['exerciseCategories']).toContain(newExerciseCategory);
+        expect(exerciseCategory['exerciseCategories']).toContain(newExerciseCategory);
         
     });
 
@@ -39,9 +40,9 @@ describe('testing exercise category in memory database', () =>{
             name: "push" 
         }
 
-        exerciseCategoryRepositoryInMem.update(ToUpdateExerciseCategory);
+        exerciseCategory.update(ToUpdateExerciseCategory);
         
-        let updatedExerciseCategory = <ExerciseCategory> exerciseCategoryRepositoryInMem['exerciseCategories'].filter(e => e.name === "Push").find;
+        let updatedExerciseCategory = <ExerciseCategory> exerciseCategory['exerciseCategories'].filter(e => e.name === "Push").find;
         
         expect(updatedExerciseCategory.id).toEqual(999);
     });
@@ -50,9 +51,9 @@ describe('testing exercise category in memory database', () =>{
         
         let toDeleteExerciseCategoryId = 1;
 
-        exerciseCategoryRepositoryInMem.delete(toDeleteExerciseCategoryId);
+        exerciseCategory.delete(toDeleteExerciseCategoryId);
 
-        expect(exerciseCategoryRepositoryInMem['exerciseCategories'].filter(e => e.id === toDeleteExerciseCategoryId).find).toBeNull();
+        expect(exerciseCategory['exerciseCategories'].filter(e => e.id === toDeleteExerciseCategoryId).find).toBeNull();
 
     });
 
