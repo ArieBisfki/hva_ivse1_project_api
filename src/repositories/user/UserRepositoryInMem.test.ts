@@ -2,7 +2,7 @@ import { container } from "tsyringe";
 import { DI_TOKEN } from "../../di/Registry";
 import UserRepositoryInMem from "./UserRepositoryInMem";
 
-describe('testing curd operations for users in memory database', () =>{
+describe('testing crud operations for users in memory database', () =>{
 
     const userRepository = <UserRepositoryInMem> container.resolve(DI_TOKEN.UserRepository);
     
