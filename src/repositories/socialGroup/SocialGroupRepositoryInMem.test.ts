@@ -1,5 +1,6 @@
+import 'reflect-metadata';
+import "./../../populateInMemDb";
 import * as users from "../../data/users.json";
-import ISocialGroupRepository from "./ISocialGroupRepository";
 import SocialGroupRepositoryInMem from "./SocialGroupRepositoryInMem";
 import { container } from "tsyringe";
 import { DI_TOKEN } from "../../di/Registry";
@@ -8,13 +9,9 @@ import WorkoutLogRepositoryInMem from "../workoutLog/WorkoutLogRepositoryInMem";
 
 describe('testing social group in memory database', () =>{
 
-    let socialGroup : ISocialGroupRepository;
+    const socialGroup = <SocialGroupRepositoryInMem>container.resolve(DI_TOKEN.SocialGroupRepository);
     const workoutLogs = <WorkoutLogRepositoryInMem>container.resolve(DI_TOKEN.WorkoutLogRepository);
     
-    beforeEach(() => {
-        socialGroup = <SocialGroupRepositoryInMem>container.resolve(DI_TOKEN.SocialGroupRepository);
-
-    });
 
     test("get all social groups of user by userId", async ()=>{
         const socialGroups = await socialGroup.getByUserId(1);
@@ -32,15 +29,16 @@ describe('testing social group in memory database', () =>{
     test("creating a new socialGroup ", async () => {
        
         let logs = await workoutLogs.get(0);
-        const socialGroup4 = await socialGroup.getByGroupId(4);
 
         if(logs)
-        socialGroup.create({
+        await socialGroup.create({
             users: [users.Arie],
             id: 4,
             name: "socialgroup4",
             workoutLogs: logs
         });
+
+        const socialGroup4 = await socialGroup.getByGroupId(4);
         
         expect(socialGroup4).not.toBeUndefined();
 

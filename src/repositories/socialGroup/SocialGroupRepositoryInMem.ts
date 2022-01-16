@@ -2,6 +2,7 @@ import { SocialGroup } from "../../models/social/SocialGroup";
 import {exec, Fail, Result, Success} from "../../utils/FailOrSuccess";
 import ISocialGroupRepository from "./ISocialGroupRepository";
 import SocialGroupRepositoryError from "./SocialGroupRepositoryError";
+import 'reflect-metadata';
 import { container } from "tsyringe";
 import { DI_TOKEN } from "../../di/Registry";
 

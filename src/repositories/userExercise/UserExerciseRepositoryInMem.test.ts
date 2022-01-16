@@ -1,7 +1,11 @@
+import 'reflect-metadata';
+import "./../../populateInMemDb";
+
 import { container } from "tsyringe";
 import { DI_TOKEN } from "../../di/Registry";
 import ExerciseCategoryRepositoryInMem from "../exerciseCategory/ExerciseCategoryRepositoryInMem";
 import UserExerciseRepositoryInMem from "./UserExerciseRepositoryInMem";
+
 
 describe("testing crud operations for userExercise in memory database", () => {
 
@@ -9,6 +13,17 @@ describe("testing crud operations for userExercise in memory database", () => {
     const exerciseCategory = <ExerciseCategoryRepositoryInMem> container.resolve(DI_TOKEN.ExerciseCategoryRepository);
     
     test("get all exercises for this user", async () =>{
+
+
+        for(let i = 0; i <= 3; i++){
+            const categoryCardio = await exerciseCategory["exerciseCategories"].find(e => e.name === "Cardio");
+    
+            userExercise.create({
+                id: i,
+                name: "exercise: " + i,
+                category: categoryCardio! 
+            });
+        }
         let exercises = await userExercise.get();
 
         expect(exercises).not.toBeUndefined();
@@ -48,7 +63,8 @@ describe("testing crud operations for userExercise in memory database", () => {
 
     test("delete exercise of user by id", async () =>{
 
-        userExercise.delete(1);
+        let result = await userExercise.delete(1);
+        expect(result).toBe(true);
 
         let deletedExercise = await userExercise.get().then(e => e?.find(e => e.id === 1));
         expect(deletedExercise).toBeUndefined();

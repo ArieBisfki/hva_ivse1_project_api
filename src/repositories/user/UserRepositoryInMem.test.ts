@@ -1,6 +1,8 @@
+import 'reflect-metadata';
 import { container } from "tsyringe";
 import { DI_TOKEN } from "../../di/Registry";
 import UserRepositoryInMem from "./UserRepositoryInMem";
+import "./../../populateInMemDb";
 
 describe('testing crud operations for users in memory database', () =>{
 
@@ -25,8 +27,9 @@ describe('testing crud operations for users in memory database', () =>{
     test('retrieve user by id', async () =>{
 
         let userId1 = await userRepository.getById(1);
+        
 
-        expect(userId1!.firstName).toEqual("Arie");
+        expect( userId1?.firstName).toEqual("Arie");
         expect(userId1).not.toBeUndefined();
 
     });
@@ -66,6 +69,8 @@ describe('testing crud operations for users in memory database', () =>{
 
     test('delete user', async () =>{
         
+        //await userRepository.delete(1);
+        expect(await userRepository.delete(1)).toBeTruthy();
         let userArie = await userRepository.getById(1);
         expect(userArie).toBeUndefined();
 

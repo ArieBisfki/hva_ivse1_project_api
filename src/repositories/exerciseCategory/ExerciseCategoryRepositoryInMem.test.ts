@@ -1,20 +1,15 @@
-import e from "express";
+import 'reflect-metadata';
+import "./../../populateInMemDb";
+
 import { container } from "tsyringe";
-import exerciseCategory from "../../controller/exercise-category";
 import { DI_TOKEN } from "../../di/Registry";
 import { ExerciseCategory } from "../../models/workout/ExerciseCategory";
 import ExerciseCategoryRepositoryInMem from "./ExerciseCategoryRepositoryInMem";
-import IExerciseCategoryRepository from "./IExerciseCategoryRepository";
 
 
 describe('testing exercise category in memory database', () =>{
     
-    let exerciseCategory : ExerciseCategoryRepositoryInMem; 
-
-    //Assign default values
-    beforeEach(() => {
-        exerciseCategory = <ExerciseCategoryRepositoryInMem> container.resolve(DI_TOKEN.ExerciseCategoryRepository);
-    });
+    const exerciseCategory = <ExerciseCategoryRepositoryInMem> container.resolve(DI_TOKEN.ExerciseCategoryRepository);
 
     test("Adding a new workoutCategory", () => {
 
@@ -25,10 +20,9 @@ describe('testing exercise category in memory database', () =>{
             name: "twist" 
         }
 
-        if(newExerciseCategory !== undefined)
+        
         exerciseCategory.create(newExerciseCategory);
-        else return;
-
+        
         expect(exerciseCategory['exerciseCategories']).toContain(newExerciseCategory);
         
     });
@@ -36,15 +30,15 @@ describe('testing exercise category in memory database', () =>{
     test("updating an existing workoutCategory", () => {
         
         let ToUpdateExerciseCategory: ExerciseCategory = {
-            id: 999,
-            name: "push" 
+            id: 1,
+            name: "pull" 
         }
 
         exerciseCategory.update(ToUpdateExerciseCategory);
         
-        let updatedExerciseCategory = <ExerciseCategory> exerciseCategory['exerciseCategories'].filter(e => e.name === "Push").find;
-        
-        expect(updatedExerciseCategory.id).toEqual(999);
+        let updatedExerciseCategory = <ExerciseCategory> exerciseCategory['exerciseCategories'].find(e => e.name === "pull");
+
+        expect(updatedExerciseCategory.id).toEqual(1);
     });
 
     test("Deleting a workoutCategory", () => {
@@ -53,7 +47,7 @@ describe('testing exercise category in memory database', () =>{
 
         exerciseCategory.delete(toDeleteExerciseCategoryId);
 
-        expect(exerciseCategory['exerciseCategories'].filter(e => e.id === toDeleteExerciseCategoryId).find).toBeNull();
+        expect(exerciseCategory['exerciseCategories'].find(e => e.id === toDeleteExerciseCategoryId)).toBeUndefined();
 
     });
 

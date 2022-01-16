@@ -1,13 +1,12 @@
-import {exec, Result} from "../../utils/FailOrSuccess";
+import 'reflect-metadata';
+import "./../../populateInMemDb";
+
+import {Result} from "../../utils/FailOrSuccess";
 import WorkoutLog from "../../models/workout/WorkoutLog";
 import IWorkoutLogRepository from "./IWorkoutLogRepository";
 import WorkoutLogRepositoryError  from "./WorkoutLogRepositoryError";
-import {ResistanceExerciseLog} from "../../models/workout/ResistanceExerciseLog";
-import {CardioExerciseLog} from "../../models/workout/CardioExerciseLog";
 import {container} from "tsyringe";
 import {DI_TOKEN} from "../../di/Registry";
-import * as users from "../../data/users.json";
-import { exercisesInit } from "../exercisesBySocialGroup/ExercisesBySocialGroupRepoInMem";
 
 
 const E = WorkoutLogRepositoryError;

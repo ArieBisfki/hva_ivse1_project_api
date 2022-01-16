@@ -58,6 +58,7 @@ const exerciseCategoriesInit = IIFE(() => {
         [CARDIO]: Cardio
     };
 });
+
 addToRepoHelper(Object.values(exerciseCategoriesInit), fnBind(repositories.exerciseCategory, "create"));
 
 const exercisesInit = IIFE(() => {

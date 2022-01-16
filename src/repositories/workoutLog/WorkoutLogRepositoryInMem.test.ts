@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import "./../../populateInMemDb";
 import { container } from "tsyringe";
 import { DI_TOKEN } from "../../di/Registry";
 import { ResistanceExerciseLog } from "../../models/workout/ResistanceExerciseLog";
@@ -23,7 +25,7 @@ describe("testing crud operations for workoutLog in memory database", () => {
         let userExercises = await userExercise.get();
         const benchPress = userExercises!.find(e => e.name === "Bench Press");
 
-        workoutLogRepository.create({
+        await workoutLogRepository.create({
             id: 5,
             exerciseLogs: [
                 new ResistanceExerciseLog(benchPress!,10,4,100)
@@ -38,36 +40,34 @@ describe("testing crud operations for workoutLog in memory database", () => {
         expect(newWorkoutLog).not.toBeUndefined();
     });
 
-    test("updating a workoutLog", async () => {
-        let userExercises = await userExercise.get();
-        const squat = userExercises!.find(e => e.name === "Squat");
+    test("updating a workoutLog by removing all exercises", async () => {
 
-        workoutLogRepository.update({
-            id: 5,
-            exerciseLogs: [
-                new ResistanceExerciseLog(squat!,10,4,100)
-            ],
+        let workoutLogs = await workoutLogRepository.get(1);
+        let workoutLog = workoutLogs!.find(w => w.id === 1);
+        expect(workoutLog?.exerciseLogs.length).toBeGreaterThanOrEqual(2);
+
+        await workoutLogRepository.update({
+            id: 1,
+            exerciseLogs: [],
             date: new Date(),
             user: users.Arie
         });
 
-        let workoutLogs = await workoutLogRepository.get(1);
-        let updatedWorkoutLog = workoutLogs!.find(w => w.id === 5);
+        workoutLogs = await workoutLogRepository.get(1);
+        let updatedWorkoutLog = workoutLogs!.find(w => w.id === 1);
 
-        expect(updatedWorkoutLog).not.toBeUndefined();
-        expect(updatedWorkoutLog?.exerciseLogs.length).toBeGreaterThanOrEqual(2);
+        expect(updatedWorkoutLog?.exerciseLogs.length).toBeGreaterThanOrEqual(0);
 
-        let exerciseWorkoutLog = updatedWorkoutLog?.exerciseLogs.find(e => e.exercise.name === "Squat");
-        expect(exerciseWorkoutLog).not.toBeUndefined();
     });
 
     test("deleting a workoutLog", async () => {
 
-        workoutLogRepository.delete(1);
+        await workoutLogRepository.delete(1);
 
-        let deletedWorkout = await workoutLogRepository.get(1).then(w => w?.find(w => w.id === 1));
-    
-        expect(deletedWorkout).toBeUndefined();
+        let userWorkoutLogs = await workoutLogRepository.get(1);
+        let deletedWorkoutLog = userWorkoutLogs?.find(w => w.id === 1);
+
+        expect(deletedWorkoutLog).toBeUndefined();
     
     });
 });
