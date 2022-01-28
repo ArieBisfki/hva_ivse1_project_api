@@ -9,6 +9,7 @@ import User from "./models/User";
 import WorkoutLog from "./models/workout/WorkoutLog";
 import {ResistanceExerciseLog} from "./models/workout/ResistanceExerciseLog";
 import {CardioExerciseLog} from "./models/workout/CardioExerciseLog";
+import {newArrayWithSize} from "./utils/ArrayUtils";
 
 function throwModelAddFailureError(model: {}) {
     throw new Error(`InMemDbPopulation: failed to add model to repository: ${JSON.stringify(model)}`);
@@ -164,9 +165,20 @@ const workoutLogsInit: WorkoutLog[] = [
     {
         id: 1,
         exerciseLogs: [
-            new ResistanceExerciseLog(exercisesInit["Bench Press"],10,4,100),
-            new ResistanceExerciseLog(exercisesInit.Squat,10,4,150),
-            new CardioExerciseLog(exercisesInit.Running,30)
+            {
+                exercise: exercisesInit["Bench Press"],
+                sets: newArrayWithSize(4).map(_ => ({
+                    reps: 10,
+                    weight: 100
+                }))
+            },
+            {
+                exercise: exercisesInit["Squat"],
+                sets: newArrayWithSize(4).map(_ => ({
+                    reps: 10,
+                    weight: 150
+                }))
+            }
         ],
         date: new Date(),
         user: users.Arie

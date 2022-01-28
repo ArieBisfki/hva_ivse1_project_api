@@ -42,7 +42,7 @@ export default class UserExerciseRepositoryInMem implements IUserExerciseReposit
     delete(id: number): Promise<boolean> {
         return this.crudUtil.delete({
             models: this.exercises,
-            filterBy: ["id", id]
+            findBy: ["id", id]
         });
     }
 }

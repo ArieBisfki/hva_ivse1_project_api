@@ -34,7 +34,7 @@ export default class UserRepositoryInMem implements IUserRepository {
         });
     }
 
-    getByUsername(username: string): Promise<User | undefined> {
+    async getByUsername(username: string): Promise<User | undefined> {
         return this.crudUtil.find({
             models: this.users,
             findBy: ["username", username]
@@ -53,7 +53,7 @@ export default class UserRepositoryInMem implements IUserRepository {
     delete(id: number): Promise<boolean> {
         return this.crudUtil.delete({
             models: this.users,
-            filterBy: ["id", id]
+            findBy: ["id", id]
         });
     }
 }

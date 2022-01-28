@@ -1,11 +1,7 @@
 import { Exercise } from './Exercise';
-import {ExerciseLog} from '../ExerciseLog';
+import {BaseExerciseLog} from "../BaseExerciseLog";
 
-export class CardioExerciseLog implements ExerciseLog{
-
-    constructor(
-        readonly exercise: Exercise,
-         readonly duration: number
-    ){}
-
+export interface CardioExerciseLog extends BaseExerciseLog {
+    readonly exercise: Exercise,
+    readonly duration: number
 }

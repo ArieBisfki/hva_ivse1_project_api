@@ -1,18 +1,16 @@
-import e from "express";
-import exerciseCategory from "../../controller/exercise-category";
+import {jest} from '@jest/globals'
 import { ExerciseCategory } from "../../models/workout/ExerciseCategory";
-import ExerciseCategoryRepositoryInMem, { exerciseCategoriesInit } from "./ExerciseCategoryRepositoryInMem"
+import ExerciseCategoryRepositoryInMem  from "./ExerciseCategoryRepositoryInMem"
 
 
 describe('testing exercise category in memory database', () =>{
+    console.log("34444444444");
     
     let exerciseCategoryRepositoryInMem : ExerciseCategoryRepositoryInMem;
 
     //Assign default values
     beforeEach(() => {
-        console.debug("VALUESSSSSS" + exerciseCategoriesInit);
-        exerciseCategoryRepositoryInMem = new ExerciseCategoryRepositoryInMem;
-        exerciseCategoryRepositoryInMem['exerciseCategories'] = Object.values(exerciseCategoriesInit);
+        exerciseCategoryRepositoryInMem = new ExerciseCategoryRepositoryInMem();
     });
 
     test("Adding a new workoutCategory", () => {

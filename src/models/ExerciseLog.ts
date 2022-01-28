@@ -1,5 +1,4 @@
-import { Exercise } from './workout/Exercise';
+import {ResistanceExerciseLog} from "./workout/ResistanceExerciseLog";
+import {CardioExerciseLog} from "./workout/CardioExerciseLog";
 
-export interface ExerciseLog{
-    exercise: Exercise;
-}
+export type ExerciseLog = ResistanceExerciseLog | CardioExerciseLog;

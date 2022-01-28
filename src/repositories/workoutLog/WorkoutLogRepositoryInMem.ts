@@ -12,8 +12,10 @@ type R<S, F> = Result<S, F>;
 export default class WorkoutLogRepositoryInMem implements IWorkoutLogRepository {
     private readonly workoutLogs: WorkoutLog[] = [];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
+    private newId = 0;
 
     create(workoutLog: WorkoutLog): Promise<R<WorkoutLog, E["DUPLICATE"]>> {
+        workoutLog.id = this.newId++;
         return this.crudUtil.create({
             models: this.workoutLogs,
             toCreate: workoutLog,
@@ -41,7 +43,7 @@ export default class WorkoutLogRepositoryInMem implements IWorkoutLogRepository 
     async delete(id: number): Promise<boolean> {
         return this.crudUtil.delete({
             models: this.workoutLogs,
-            filterBy: ["id", id]
+            findBy: ["id", id]
         });
     }
 }

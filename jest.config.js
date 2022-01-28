@@ -2,5 +2,7 @@
 
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+  testEnvironment: 'jest-environment-node',
+  rootDir: "src",
+  transform: {}
 };

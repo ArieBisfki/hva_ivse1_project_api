@@ -33,6 +33,6 @@ export default interface ICRUDUtil {
 
     delete<Model>(config: {
         models: Model[],
-        filterBy: KeyValueTuple<Model> | Predicate<Model>
+        findBy: KeyValueTuple<Model> | Predicate<Model>
     }): Promise<boolean>;
 }

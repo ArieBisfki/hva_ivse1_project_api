@@ -116,7 +116,7 @@ export default class ExercisesBySocialGroupRepoInMem implements ISocialGroupExer
     deleteAll(socialGroupId: number): Promise<boolean> {
         return this.crudUtil.delete({
             models: this.exercisesBySocialGroups,
-            filterBy: ({socialGroup: {id}}) => id === socialGroupId
+            findBy: ({socialGroup: {id}}) => id === socialGroupId
         });
     }
 }

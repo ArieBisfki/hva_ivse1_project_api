@@ -81,19 +81,24 @@ export default class CRUDUtilInMem implements ICRUDUtil {
 
     async delete<Model>(config: {
         models: Model[],
-        filterBy: KeyValueTuple<Model> | Predicate<Model>
+        findBy: KeyValueTuple<Model> | Predicate<Model>
     }): Promise<boolean> {
         const {
             models,
-            filterBy: filterByUnion
+            findBy: findByUnion
         } = config;
 
-        const filterByFn = typeof filterByUnion === "function"
-            ? filterByUnion
-            : (model: Model) => model[filterByUnion[0]] === filterByUnion[1];
+        const findIndexFn = typeof findByUnion === "function"
+            ? findByUnion
+            : (model: Model) => model[findByUnion[0]] === findByUnion[1];
+
+        const index = models.findIndex(findIndexFn);
+        if (index === -1) {
+            return false;
+        }
 
         const sizeBefore = models.length;
-        config.models = models.filter(filterByFn);
+        models.splice(index, 1);
         const sizeAfter = models.length;
 
         return sizeBefore !== sizeAfter;

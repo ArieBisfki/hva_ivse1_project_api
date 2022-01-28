@@ -35,7 +35,7 @@ export default class ExerciseCategoryRepositoryInMem implements IExerciseCategor
     delete(id: number): Promise<boolean> {
         return this.crudUtil.delete({
             models: this.exerciseCategories,
-            filterBy: ["id", id]
+            findBy: ["id", id]
         });
     }
 }

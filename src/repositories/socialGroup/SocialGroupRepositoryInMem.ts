@@ -50,7 +50,7 @@ export default class SocialGroupRepositoryInMem implements ISocialGroupRepositor
     async delete(id: number): Promise<boolean> {
         return this.crudUtil.delete({
             models: this.socialGroups,
-            filterBy: ["id", id]
+            findBy: ["id", id]
         });    
     }
 
