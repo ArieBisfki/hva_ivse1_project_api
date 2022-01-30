@@ -1,5 +1,5 @@
 import IUserRepository from "./IUserRepository";
-import {Result} from "../../utils/FailOrSuccess";
+import {exec, Result, resultIsFail} from "../../utils/FailOrSuccess";
 import UserRepositoryError from "./UserRepositoryError";
 import User from "../../models/User";
 import {container} from "tsyringe";
@@ -12,18 +12,22 @@ type R<S, F> = Result<S, F>;
 export default class UserRepositoryInMem implements IUserRepository {
     private readonly users: User[] = [];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
-    private idCounter = this.users.length;
+    private newId = 0;
 
     create(user: User): Promise<R<User, E["DUPLICATE"]>> {
-        const userWithId: User = {
-            ...user,
-            id: ++this.idCounter
-        };
-        return this.crudUtil.create({
-            models: this.users,
-            toCreate: userWithId,
-            equalityBy: "id",
-            duplicateError: E.DUPLICATE
+        return exec(async (resolve, err) => {
+            const createResult = await this.crudUtil.create({
+                models: this.users,
+                toCreate: user,
+                equalityBy: "id"
+            });
+
+            if (resultIsFail(createResult)) {
+                return err(E.DUPLICATE);
+            } else {
+                createResult.result.id = this.newId++;
+                return resolve(createResult.result);
+            }
         });
     }
 

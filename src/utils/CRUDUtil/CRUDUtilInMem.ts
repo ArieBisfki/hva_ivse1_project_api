@@ -1,38 +1,67 @@
-import {exec, Result} from "../FailOrSuccess";
+import {exec, Fail, Result, resultIsFail, Success} from "../FailOrSuccess";
 import ICRUDUtil, {BiPredicate, Predicate, KeyValueTuple} from "./ICRUDUtil";
+import {DeepReadonly, Primitive} from "utility-types";
+import {equalityByFn} from "../FuncUtils";
 
 type R<S, F> = Result<S, F>;
 
 export default class CRUDUtilInMem implements ICRUDUtil {
-    private equalityByUnionToFn<Model>(union: keyof Model | BiPredicate<Model>): BiPredicate<Model> {
-        return typeof union === "function"
-            ? union
-            : (m1, m2) => m1[union] === m2[union];
-    }
-
-    create<Model, DuplicateError>({
-                                      models,
-                                      toCreate,
-                                      equalityBy: equalityByUnion,
-                                      duplicateError
-                                  }: {
-        models: Model[]
-        toCreate: Model,
-        equalityBy: keyof Model | BiPredicate<Model>,
-        duplicateError: DuplicateError
-    }): Promise<R<Model, DuplicateError>> {
+    async create<Model>(
+        {
+            models,
+            toCreate,
+            equalityBy: equalityByUnion
+        }: {
+            models: Model[]
+            toCreate: Model,
+            equalityBy: keyof Model | BiPredicate<Model>
+        }
+    ): Promise<R<Model, { existingModel: Model }>> {
         return exec((resolve, err) => {
-            const equalityByFn = this.equalityByUnionToFn(equalityByUnion);
+            const existingModel = models.find(m => equalityByFn(equalityByUnion)(m, toCreate));
 
-            const modelAlreadyExists = models.some(m => equalityByFn(m, toCreate));
-            if (modelAlreadyExists) {
-                return err(duplicateError);
+            if (existingModel) {
+                return err({existingModel});
             }
 
             models.push(toCreate);
 
-            resolve(toCreate);
+            return resolve(toCreate);
         });
+    }
+
+    async createNewOrUpdateExisting<Model>({
+                                         models,
+                                         toCreate,
+                                         equalityBy: equalityByKeyOrFn,
+                                         duplicateMerger
+                                     }: {
+        models: Model[];
+        toCreate: Model;
+        equalityBy: keyof Model | BiPredicate<Model>;
+        duplicateMerger: (existingModel: Model, newModel: Model) => Model;
+    }): Promise<Model | undefined> {
+        const createResult = await this.create({
+            models,
+            toCreate,
+            equalityBy: equalityByKeyOrFn
+        });
+        if (resultIsFail(createResult)) {
+            const merged = duplicateMerger(createResult.error.existingModel, toCreate);
+            const updateResult = await this.update({
+                models,
+                toUpdate: merged,
+                findBy: (m) => equalityByFn(equalityByKeyOrFn)(m, merged),
+                notFoundError: 0
+            });
+            if (resultIsFail(updateResult)) {
+                return;
+            } else {
+                return merged;
+            }
+        } else {
+            return toCreate;
+        }
     }
 
     async find<Model>({models, findBy}: {

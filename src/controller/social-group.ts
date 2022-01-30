@@ -3,6 +3,7 @@ import { DI_TOKEN } from '../di/Registry';
 import { resultIsFail } from '../utils/FailOrSuccess';
 import { constants } from "http2";
 import { AddSocialGroupRequestHandler, DeleteSocialGroupRequestHandler, GetUserSocialGroupsRequestHandler, SocialGroupsByQueryRequestHandler, UpdateSocialGroupRequestHandler } from "../models/endpoint/social-group"
+import {extractUser} from "../utils/AuthUtils";
 
 const socialGroupRepository = container.resolve(DI_TOKEN.SocialGroupRepository);
 
@@ -30,8 +31,8 @@ const deleteSocialGroup: DeleteSocialGroupRequestHandler = async(req, res, next)
     res.status(status).send();
 }
 
-const updateSocialGroup: UpdateSocialGroupRequestHandler = async(req, res, next) => {
-    const socialgroup = req.body;
+const updateSocialGroup: UpdateSocialGroupRequestHandler = async (req, res, next) => {
+    /*const socialgroup = req.body;
 
     const updateResult = await socialGroupRepository.update(socialgroup);
 
@@ -39,10 +40,9 @@ const updateSocialGroup: UpdateSocialGroupRequestHandler = async(req, res, next)
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     } else {
         res.status(constants.HTTP_STATUS_OK).json({
-            socialgroup: updateResult.result
-            
+            socialGroup: updateResult.result
         })
-    }
+    }*/
 }
 
 // TODO: hoe gaan we dit aanpakken?
@@ -52,7 +52,12 @@ const getAllSocialGroupsByQuery: SocialGroupsByQueryRequestHandler = async(req, 
 }
 
 const getUserSocialGroups: GetUserSocialGroupsRequestHandler = async(req, res, next) => {
-    const socialGroups = await socialGroupRepository.get(req.params.id);
+    const user = await extractUser(req);
+    if (!user) {
+        return res.status(constants.HTTP_STATUS_UNAUTHORIZED).send();
+    }
+
+    const socialGroups = await socialGroupRepository.getByUserId(user.id!);
 
     if (!socialGroups) {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
@@ -60,7 +65,6 @@ const getUserSocialGroups: GetUserSocialGroupsRequestHandler = async(req, res, n
         res.status(constants.HTTP_STATUS_OK)
             .json({
                 socialGroups: socialGroups
-
             })
             .send();
     }

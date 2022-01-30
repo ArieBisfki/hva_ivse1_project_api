@@ -1,9 +1,10 @@
-import {exec, Result} from "../../utils/FailOrSuccess";
+import {exec, Result, resultIsFail} from "../../utils/FailOrSuccess";
 import WorkoutLog from "../../models/workout/WorkoutLog";
 import IWorkoutLogRepository from "./IWorkoutLogRepository";
 import WorkoutLogRepositoryError  from "./WorkoutLogRepositoryError";
 import {container} from "tsyringe";
 import {DI_TOKEN} from "../../di/Registry";
+import {IIFE} from "../../utils/FuncUtils";
 
 const E = WorkoutLogRepositoryError;
 type E = typeof E;
@@ -15,13 +16,19 @@ export default class WorkoutLogRepositoryInMem implements IWorkoutLogRepository 
     private newId = 0;
 
     create(workoutLog: WorkoutLog): Promise<R<WorkoutLog, E["DUPLICATE"]>> {
-        workoutLog.id = this.newId++;
-        return this.crudUtil.create({
-            models: this.workoutLogs,
-            toCreate: workoutLog,
-            equalityBy: "id",
-            duplicateError: E.DUPLICATE
-        });
+        return exec(async (resolve, err) => {
+            const createResult = await this.crudUtil.create({
+                models: this.workoutLogs,
+                toCreate: workoutLog,
+                equalityBy: "id"
+            });
+            if (resultIsFail(createResult)) {
+                return err(E.DUPLICATE);
+            } else {
+                workoutLog.id = this.newId++;
+                return resolve(createResult.result);
+            }
+        })
     }
 
     async get(userId: number): Promise<WorkoutLog[] | undefined> {

@@ -5,7 +5,7 @@ export enum Gender {
 }
 
 export default interface User {
-    readonly id?: number,
+    id?: number,
     readonly username: string,
     readonly password: string,
     readonly email: string,

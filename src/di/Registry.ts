@@ -1,5 +1,4 @@
 import {InjectionToken, Lifecycle, registry} from "tsyringe";
-import ExerciseRepositoryInMem from "../repositories/userExercise/UserExerciseRepositoryInMem";
 import WorkoutLogRepositoryInMem from "../repositories/workoutLog/WorkoutLogRepositoryInMem";
 import ExerciseCategoryRepositoryInMem from "../repositories/exerciseCategory/ExerciseCategoryRepositoryInMem";
 import AbstractAuthTokenService from "../auth/AbstractAuthTokenService";
@@ -15,14 +14,12 @@ import UserRefreshTokenRepositoryInMem from "../repositories/userRefreshTokens/U
 import IUserExerciseRepository from "../repositories/userExercise/IUserExerciseRepository";
 import IWorkoutLogRepository from "../repositories/workoutLog/IWorkoutLogRepository";
 import IExerciseCategoryRepository from "../repositories/exerciseCategory/IExerciseCategoryRepository";
-import {Registration} from "tsyringe/dist/typings/dependency-container";
 import IExercisesBySocialGroupRepository
     from "../repositories/exercisesBySocialGroup/IExercisesBySocialGroupRepository";
 import ExercisesBySocialGroupRepoInMem from "../repositories/exercisesBySocialGroup/ExercisesBySocialGroupRepoInMem";
 import UserExerciseRepositoryInMem from "../repositories/userExercise/UserExerciseRepositoryInMem";
 
 export const DI_TOKEN = Object.freeze({
-    "ExerciseRepository": Symbol() as InjectionToken<IUserExerciseRepository>,
     "WorkoutLogRepository": Symbol() as InjectionToken<IWorkoutLogRepository>,
     "ExerciseCategoryRepository": Symbol() as InjectionToken<IExerciseCategoryRepository>,
     "ExercisesBySocialGroupRepository": Symbol() as InjectionToken<IExercisesBySocialGroupRepository>,
@@ -35,7 +32,6 @@ export const DI_TOKEN = Object.freeze({
 });
 
 @registry([
-    {token: DI_TOKEN.ExerciseRepository, useClass: ExerciseRepositoryInMem},
     {token: DI_TOKEN.WorkoutLogRepository, useClass: WorkoutLogRepositoryInMem},
     {token: DI_TOKEN.ExerciseCategoryRepository, useClass: ExerciseCategoryRepositoryInMem},
     {token: DI_TOKEN.ExercisesBySocialGroupRepository, useClass: ExercisesBySocialGroupRepoInMem},

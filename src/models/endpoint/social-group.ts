@@ -34,6 +34,9 @@ export type DeleteSocialGroupQueryParams = undefined
 // Update social group
 export type UpdateSocialGroupRequestHandler = RequestHandler<UpdateSocialGroupRouteParams, UpdateSocialGroupResBody, UpdateSocialGroupReqBody, UpdateSocialGroupQueryParams>;
 export type UpdateSocialGroupRouteParams = {id: number};
-export type UpdateSocialGroupReqBody = SocialGroup;
-export type UpdateSocialGroupResBody = {socialgroup: SocialGroup};
+export type UpdateSocialGroupReqBody = {
+    users: number[],
+    name: string
+};
+export type UpdateSocialGroupResBody = {socialGroup: SocialGroup};
 export type UpdateSocialGroupQueryParams = undefined

@@ -1,4 +1,4 @@
-import {exec, Result} from "../../utils/FailOrSuccess";
+import {exec, Result, resultIsFail} from "../../utils/FailOrSuccess";
 import ExerciseCategoryRepositoryError  from "./ExerciseCategoryRepositoryError";
 import IExerciseCategoryRepository from "./IExerciseCategoryRepository";
 import {ExerciseCategory} from "../../models/workout/ExerciseCategory";
@@ -13,13 +13,29 @@ type R<S, F> = Result<S, F>;
 export default class ExerciseCategoryRepositoryInMem implements IExerciseCategoryRepository {
     private exerciseCategories: ExerciseCategory[] = [];
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
+    private newId = 0;
 
     create(exerciseCategory: ExerciseCategory): Promise<R<ExerciseCategory, E["DUPLICATE"]>> {
-        return this.crudUtil.create({
+        return exec(async (resolve, err) => {
+            const createResult = await this.crudUtil.create({
+                models: this.exerciseCategories,
+                toCreate: exerciseCategory,
+                equalityBy: "id"
+            });
+
+            if (resultIsFail(createResult)) {
+                return err(E.DUPLICATE);
+            } else {
+                createResult.result.id = this.newId++;
+                return resolve(createResult.result);
+            }
+        });
+    }
+
+    get(exerciseCategoryId: number): Promise<ExerciseCategory | undefined> {
+        return this.crudUtil.find({
             models: this.exerciseCategories,
-            toCreate: exerciseCategory,
-            equalityBy: "id",
-            duplicateError: E.DUPLICATE
+            findBy: ["id", exerciseCategoryId]
         });
     }
 

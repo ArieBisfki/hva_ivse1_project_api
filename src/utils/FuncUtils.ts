@@ -2,7 +2,7 @@
  * @author Arie Bisfki
  * Contains handy utilities for working with functions.
  */
-import Only from "./Only";
+import Only from "./types/Only";
 
 export function equalityBiPredicateOnProp<T>(property: keyof T): (a: T, b: T) => boolean {
     return (a, b) => a[property] === b[property];

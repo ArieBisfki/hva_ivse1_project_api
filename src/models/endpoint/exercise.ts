@@ -11,20 +11,26 @@ export type GetExercisesQueryParams = undefined;
 //Add Exercise
 export type AddExerciseRequestHandler = RequestHandler<AddExerciseRouteParams, AddExerciseResBody, AddExerciseReqBody, AddExerciseQueryParams>;
 export type AddExerciseRouteParams = undefined;
-export type AddExerciseReqBody = Exercise;
-export type AddExerciseResBody = {exercise: Exercise};
+export type AddExerciseReqBody = {
+    name: string;
+    categoryId: number;
+};
+export type AddExerciseResBody = {exercises: Exercise[]};
 export type AddExerciseQueryParams = undefined
 
 //Delete Exercise
 export type DeleteExerciseRequestHandler = RequestHandler<DeleteExerciseRouteParams, DeleteExerciseResBody, DeleteExerciseReqBody, DeleteExerciseQueryParams>;
-export type DeleteExerciseRouteParams = {id: number};
+export type DeleteExerciseRouteParams = {id: string};
 export type DeleteExerciseReqBody = undefined;
 export type DeleteExerciseResBody = undefined;
 export type DeleteExerciseQueryParams = undefined
 
 //Update Exercise
 export type UpdateExerciseRequestHandler = RequestHandler<UpdateExerciseRouteParams, UpdateExerciseResBody, UpdateExerciseReqBody, UpdateExerciseQueryParams>;
-export type UpdateExerciseRouteParams = {id: number};
-export type UpdateExerciseReqBody = Exercise;
-export type UpdateExerciseResBody = {exercise: Exercise};
+export type UpdateExerciseRouteParams = {id: string};
+export type UpdateExerciseReqBody = {
+    name: string;
+    categoryId: number
+};
+export type UpdateExerciseResBody = {exercises: Exercise[]};
 export type UpdateExerciseQueryParams = undefined

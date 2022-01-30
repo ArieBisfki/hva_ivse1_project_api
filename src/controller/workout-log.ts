@@ -7,7 +7,7 @@ import {
 } from '../models/endpoint/workout-log';
 import { container } from 'tsyringe';
 import { DI_TOKEN } from '../di/Registry';
-import {exec, Fail, Result, resultIsFail} from "../utils/FailOrSuccess";
+import {exec, Result, resultIsFail} from "../utils/FailOrSuccess";
 import {constants} from "http2";
 import WorkoutLog from "../models/workout/WorkoutLog";
 import {extractUser} from "../utils/AuthUtils";
@@ -15,7 +15,7 @@ import User from "../models/User";
 import {ExerciseLog} from "../models/ExerciseLog";
 
 const workoutLogRepository = container.resolve(DI_TOKEN.WorkoutLogRepository);
-const exerciseRepository = container.resolve(DI_TOKEN.ExerciseRepository);
+const exerciseRepository = container.resolve(DI_TOKEN.UserExerciseRepository);
 
 const getWorkoutLogs: GetWorkoutLogsRequestHandler = async (req, res, next) => {
     const user = await extractUser(req);
@@ -38,17 +38,17 @@ const getWorkoutLogs: GetWorkoutLogsRequestHandler = async (req, res, next) => {
 
 const completeWorkoutLog = (incompleteWorkoutLog: AddWorkoutLogReqBody, user: User):
     Promise<Result<WorkoutLog, typeof constants.HTTP_STATUS_INTERNAL_SERVER_ERROR | typeof constants.HTTP_STATUS_BAD_REQUEST>> => exec(async (resolve, err) => {
-    if (!user.id) return err(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
+    if (user.id == null) return err(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-    const allUserExercises = await exerciseRepository.get(user.id!);
-    if (!allUserExercises) {
+    const userExercises = await exerciseRepository.get(user.id!);
+    if (!userExercises) {
         return err(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
     }
 
     // Complete exercise logs from request body
     const exerciseLogs: ExerciseLog[] = [];
     for(const {exercise: {id: exerciseId}, sets} of incompleteWorkoutLog.exerciseLogs) {
-        const exercise = allUserExercises.find(e => e.id === exerciseId);
+        const exercise = userExercises.exercises.find(({id: eid}) => eid === exerciseId);
         if (!exercise) {
             return err(constants.HTTP_STATUS_BAD_REQUEST);
         }

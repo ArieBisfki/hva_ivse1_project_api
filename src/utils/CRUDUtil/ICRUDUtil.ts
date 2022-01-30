@@ -1,4 +1,5 @@
 import {Result} from "../FailOrSuccess";
+import {Primitive} from "utility-types";
 
 export type BiPredicate<Model> = (m1: Model, m2: Model) => boolean;
 export type Predicate<Model> = (model: Model) => boolean;
@@ -7,12 +8,18 @@ export type KeyValueTuple<Model> = keyof Model extends infer T ? T extends keyof
 type R<S, F> = Result<S, F>;
 
 export default interface ICRUDUtil {
-    create<Model, DuplicateError>(config: {
+    create<Model>(config: {
+        models: Model[]
+        toCreate: Model,
+        equalityBy: keyof Model | BiPredicate<Model>
+    }): Promise<R<Model, { existingModel: Model }>>;
+
+    createNewOrUpdateExisting<Model>(config: {
         models: Model[]
         toCreate: Model,
         equalityBy: keyof Model | BiPredicate<Model>,
-        duplicateError: DuplicateError
-    }): Promise<R<Model, DuplicateError>>;
+        duplicateMerger: (existingModel: Model, newModel: Model) => Model
+    }): Promise<Model | undefined>;
 
     find<Model>(config: {
         models: Model[],

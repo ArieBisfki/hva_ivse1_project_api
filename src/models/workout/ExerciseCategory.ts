@@ -1,4 +1,4 @@
 export interface ExerciseCategory {
-    readonly id?: number;
+    id?: number;
     readonly name: string;
 }

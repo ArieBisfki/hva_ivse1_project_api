@@ -19,13 +19,13 @@ router.put('/workout-log/:id', protectedRoute(WorkoutLog.updateWorkoutLog));
 
 //exercise endpoints
 router.get('/exercise', protectedRoute(Exercise.getExercises));
-router.post('exercise', protectedRoute(Exercise.addExercise));
-router.delete('/exercise', protectedRoute(Exercise.deleteExercise));
-router.put('/exercise', protectedRoute(WorkoutLog.updateWorkoutLog));
+router.post('/exercise', protectedRoute(Exercise.addExercise));
+router.delete('/exercise/:id', protectedRoute(Exercise.deleteExercise));
+router.put('/exercise/:id', protectedRoute(Exercise.updateExercise));
 
 //exercise-log endpoints
 router.post('/exercise/category', protectedRoute(ExerciseCategory.addExerciseCategory));
-router.delete('/exercise/category', protectedRoute(ExerciseCategory.updateExerciseCategory));
-router.put('/exercise/category', protectedRoute(ExerciseCategory.deleteExerciseCategory));
+router.delete('/exercise/category/:id', protectedRoute(ExerciseCategory.updateExerciseCategory));
+router.put('/exercise/category/:id', protectedRoute(ExerciseCategory.deleteExerciseCategory));
 
 export default router;
