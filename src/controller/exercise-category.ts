@@ -20,7 +20,7 @@ const addExerciseCategory: AddExerciseCategoryRequestHandler = async (req, res, 
 }
 
 const deleteExerciseCategory: DeleteExerciseCategoryRequestHandler = async (req, res, next) => {
-    const wasDeleted = await exerciseCategoryRepository.delete(req.params.id);
+    const wasDeleted = await exerciseCategoryRepository.delete(parseInt(req.params.id));
 
     const status = wasDeleted
         ? constants.HTTP_STATUS_INTERNAL_SERVER_ERROR

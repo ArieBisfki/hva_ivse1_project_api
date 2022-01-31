@@ -8,6 +8,7 @@ import ExerciseCategoryRepositoryInMem from "./ExerciseCategoryRepositoryInMem";
 
 
 describe('testing exercise category in memory database', () =>{
+    console.log("34444444444");
     
     const exerciseCategory = <ExerciseCategoryRepositoryInMem> container.resolve(DI_TOKEN.ExerciseCategoryRepository);
 

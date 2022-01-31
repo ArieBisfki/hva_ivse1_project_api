@@ -19,7 +19,7 @@ function loginByPassword({username, password}: LoginUserPasswordReqBody): Promis
         const user = await userRepository.getByUsername(username);
 
         if (!user) {
-            return err({statusCode: constants.HTTP_STATUS_BAD_REQUEST});
+            return err({statusCode: constants.HTTP_STATUS_UNAUTHORIZED});
         }
 
         if (password !== user.password) {
@@ -80,7 +80,6 @@ const loginUser: LoginUserRequestHandler = async (req, res, next) => {
 }
 
 const registerUser: RegisterUserRequestHandler = async (req, res, next) => {
-
     const existingUserWithUsername = await userRepository.getByUsername(req.body.username);
 
     if (existingUserWithUsername) {

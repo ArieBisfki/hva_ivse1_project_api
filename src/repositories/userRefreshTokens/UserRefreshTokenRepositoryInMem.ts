@@ -75,7 +75,7 @@ export default class UserRefreshTokenRepositoryInMem implements IUserRefreshToke
     deleteRefreshTokenForUser(userId: number): Promise<boolean> {
         return this.crudUtil.delete({
             models: this.userRefreshTokens,
-            filterBy: ({user: {id}}) => id === userId
+            findBy: ({user: {id}}) => id === userId
         });
     }
 }

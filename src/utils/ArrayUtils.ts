@@ -45,7 +45,7 @@ export function concatWithoutDuplicates<T, U>(arrA: T[],
 
     const duplicatesInArrB: U[] = [];
     const withoutDuplicates = [...arrA, ...(arrB.filter(b => {
-        const shouldBeKept = arrA.some(a => equalityByFn(a, b));
+        const shouldBeKept = !arrA.some(a => equalityByFn(a, b));
         if (!shouldBeKept) {
             duplicatesInArrB.push(b);
         }
@@ -59,4 +59,8 @@ export function arrayMinus<T>(arrA: T[], arrB: T[], equalityBy?: EqualityBy<T, T
     return arrA.concat(arrB
         .filter(b => !arrA.some(a => equalityByFn(a, b)))
     );
+}
+
+export function newArrayWithSize<T>(size: number): T[] {
+    return [...new Array(size)];
 }

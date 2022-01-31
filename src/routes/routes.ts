@@ -3,6 +3,7 @@ import UserController from '../controller/auth';
 import WorkoutLog from '../controller/workout-log';
 import Exercise from '../controller/exercise';
 import ExerciseCategory from '../controller/exercise-category';
+import protectedRoute from "../auth/protectedRoute";
 
 const router = express.Router();
 
@@ -11,20 +12,20 @@ router.post('/auth/login', UserController.loginUser);
 router.post('/auth/register', UserController.registerUser);
 
 //workout-log endpoints
-router.get('/workout-log', WorkoutLog.getWorkoutLogs);
-router.post('/workout-log', WorkoutLog.addWorkoutLog);
-router.delete('/workout-log', WorkoutLog.deleteWorkoutLog);
-router.put('/workout-log', WorkoutLog.updateWorkoutLog);
+router.get('/workout-log', protectedRoute(WorkoutLog.getWorkoutLogs));
+router.post('/workout-log', protectedRoute(WorkoutLog.addWorkoutLog));
+router.delete('/workout-log/:id', protectedRoute(WorkoutLog.deleteWorkoutLog));
+router.put('/workout-log/:id', protectedRoute(WorkoutLog.updateWorkoutLog));
 
 //exercise endpoints
-router.get('/exercise', Exercise.getExercises);
-router.post('exercise', Exercise.addExercise);
-router.delete('/exercise', Exercise.deleteExercise);
-router.put('/exercise', WorkoutLog.updateWorkoutLog);
+router.get('/exercise', protectedRoute(Exercise.getExercises));
+router.post('/exercise', protectedRoute(Exercise.addExercise));
+router.delete('/exercise/:id', protectedRoute(Exercise.deleteExercise));
+router.put('/exercise/:id', protectedRoute(Exercise.updateExercise));
 
 //exercise-log endpoints
-router.post('/exercise/category',ExerciseCategory.addExerciseCategory);
-router.delete('/exercise/category',ExerciseCategory.updateExerciseCategory);
-router.put('/exercise/category',ExerciseCategory.deleteExerciseCategory);
+router.post('/exercise/category', protectedRoute(ExerciseCategory.addExerciseCategory));
+router.delete('/exercise/category/:id', protectedRoute(ExerciseCategory.updateExerciseCategory));
+router.put('/exercise/category/:id', protectedRoute(ExerciseCategory.deleteExerciseCategory));
 
 export default router;

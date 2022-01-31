@@ -1,5 +1,5 @@
 import WorkoutLog from "./WorkoutLog";
-import { User } from "../User";
+import User  from "../User";
 
 export class UserWorkoutLog{
 

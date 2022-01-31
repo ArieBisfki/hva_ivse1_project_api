@@ -101,7 +101,7 @@ export default abstract class AbstractAuthTokenService {
             ? user
             : user.id;
 
-        if (!userId) {
+        if (userId == null) {
             return;
         }
 

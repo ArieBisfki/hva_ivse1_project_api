@@ -1,13 +1,8 @@
-import { Exercise } from './Exercise';
-import {ExerciseLog} from '../ExerciseLog';
+import {BaseExerciseLog} from "../BaseExerciseLog";
 
-export class ResistanceExerciseLog implements ExerciseLog{
-
-    constructor(
-        readonly exercise: Exercise,
+export interface ResistanceExerciseLog extends BaseExerciseLog {
+    readonly sets: Array<{
         readonly reps: number,
-        readonly sets: number,
         readonly weight: number
-    ){}
-
+    }>;
 }

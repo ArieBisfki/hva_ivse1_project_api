@@ -3,41 +3,67 @@ import { DI_TOKEN } from "../di/Registry";
 import { AddExerciseRequestHandler, DeleteExerciseRequestHandler, GetExercisesRequestHandler, UpdateExerciseRequestHandler } from "../models/endpoint/exercise";
 import {constants} from "http2";
 import {resultIsFail} from "../utils/FailOrSuccess";
+import {Exercise} from "../models/workout/Exercise";
+import {extractUser} from "../utils/AuthUtils";
 
-const exerciseRepository = container.resolve(DI_TOKEN.ExerciseRepository);
+const exerciseRepository = container.resolve(DI_TOKEN.UserExerciseRepository);
+const exerciseCategoryRepository = container.resolve(DI_TOKEN.ExerciseCategoryRepository);
 
 const getExercises: GetExercisesRequestHandler = async (req, res, next) => {
-    const exercises = await exerciseRepository.get(0);
+    const user = await extractUser(req);
+    if (!user) {
+        return res.status(constants.HTTP_STATUS_UNAUTHORIZED).send();
+    }
 
-    if (!exercises) {
+    const userExercises = await exerciseRepository.get(user.id!);
+    if (!userExercises) {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     } else {
         res.status(constants.HTTP_STATUS_OK)
             .json({
-                exercises
+                exercises: userExercises.exercises
             })
             .send();
     }
 }
 
+let exerciseId = 4000;
 const addExercise: AddExerciseRequestHandler = async (req, res, next) => {
+    const user = await extractUser(req);
+    if (!user) {
+        return res.status(constants.HTTP_STATUS_UNAUTHORIZED).send();
+    }
 
-    const exercise = req.body;
+    const exerciseCategory = await exerciseCategoryRepository.get(req.body.categoryId);
+    if (!exerciseCategory) {
+        return res.status(constants.HTTP_STATUS_BAD_REQUEST).send();
+    }
 
-    const addResult = await exerciseRepository.create(exercise);
+    const exercise: Exercise = {
+        name: req.body.name,
+        category: exerciseCategory
+    };
+
+    exercise.id = exerciseId++;
+    const addResult = await exerciseRepository.create([exercise], user.id!);
     if (resultIsFail(addResult)) {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     } else {
         res.status(constants.HTTP_STATUS_OK)
             .json({
-                exercise: addResult.result
+                exercises: addResult.result.exercises
             })
             .send();
     }
 }
 
 const deleteExercise: DeleteExerciseRequestHandler = async (req, res, next) => {
-    const wasDeleted = await exerciseRepository.delete(req.params.id);
+    const user = await extractUser(req);
+    if (!user) {
+        return res.status(constants.HTTP_STATUS_UNAUTHORIZED).send();
+    }
+
+    const wasDeleted = await exerciseRepository.delete(user.id!);
 
     const status = wasDeleted
         ? constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
@@ -47,16 +73,28 @@ const deleteExercise: DeleteExerciseRequestHandler = async (req, res, next) => {
 }
 
 const updateExercise: UpdateExerciseRequestHandler = async (req, res, next) => {
+    const user = await extractUser(req);
+    if (!user) {
+        return res.status(constants.HTTP_STATUS_UNAUTHORIZED).send();
+    }
 
-    const exercise = req.body;
+    const exerciseCategory = await exerciseCategoryRepository.get(req.body.categoryId);
+    if (!exerciseCategory) {
+        return res.status(constants.HTTP_STATUS_BAD_REQUEST).send();
+    }
 
-    const updateResult = await exerciseRepository.create(exercise);
+    const exercise: Exercise = {
+        name: req.body.name,
+        category: exerciseCategory
+    };
+
+    const updateResult = await exerciseRepository.update([exercise], user.id!);
     if (resultIsFail(updateResult)) {
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
+        return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     } else {
-        res.status(constants.HTTP_STATUS_OK)
+        return res.status(constants.HTTP_STATUS_OK)
             .json({
-                exercise: updateResult.result
+                exercises: updateResult.result.exercises
             })
             .send();
     }

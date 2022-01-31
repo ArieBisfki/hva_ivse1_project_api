@@ -2,12 +2,6 @@ import {RequestHandler} from "express";
 import User from "../User";
 import {Request} from "express/ts4.0";
 
-export type ProtectedRouteRequestHandler = RequestHandler<ProtectedRouteRouteParams, ProtectedRouteResBody, ProtectedRouteReqBody, ProtectedRouteQueryParams>;
-export type ProtectedRouteRouteParams = undefined;
-export type ProtectedRouteReqBody = undefined;
-export type ProtectedRouteResBody = undefined;
-export type ProtectedRouteQueryParams = undefined;
-
 // Login user
 export type LoginUserRequestHandler = RequestHandler<
     LoginUserRouteParams,

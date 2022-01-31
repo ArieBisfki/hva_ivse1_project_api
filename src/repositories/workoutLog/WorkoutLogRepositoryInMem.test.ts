@@ -62,7 +62,8 @@ describe("testing crud operations for workoutLog in memory database", () => {
 
     test("deleting a workoutLog", async () => {
 
-        await workoutLogRepository.delete(1);
+        let response = await workoutLogRepository.delete(1);
+        expect(response).toBeTruthy();
 
         let userWorkoutLogs = await workoutLogRepository.get(1);
         let deletedWorkoutLog = userWorkoutLogs?.find(w => w.id === 1);

@@ -1,31 +1,33 @@
 import {Exercise} from "./models/workout/Exercise";
 import {container} from "tsyringe";
 import {DI_TOKEN} from "./di/Registry";
-import {Result, resultIsFail} from "./utils/FailOrSuccess";
+import {Fail, Result, resultIsFail} from "./utils/FailOrSuccess";
 import {fnBind, IIFE} from "./utils/FuncUtils";
-import * as users from "./data/users.json";
 import {ExerciseCategory} from "./models/workout/ExerciseCategory";
 import User from "./models/User";
 import WorkoutLog from "./models/workout/WorkoutLog";
-import {ResistanceExerciseLog} from "./models/workout/ResistanceExerciseLog";
-import {CardioExerciseLog} from "./models/workout/CardioExerciseLog";
+import {newArrayWithSize} from "./utils/ArrayUtils";
+import ExercisesBySocialGroup from "./models/social/ExercisesBySocialGroup";
+import {SocialGroup} from "./models/social/SocialGroup";
+import {ExercisesByUser} from "./models/ExercisesByUser";
 
-function throwModelAddFailureError(model: {}) {
-    throw new Error(`InMemDbPopulation: failed to add model to repository: ${JSON.stringify(model)}`);
-}
-
-async function addToRepoHelper<Model, CreateFnReturnType extends Promise<Result<any, any>>>(models: Model[], createFn: (model: Model) => CreateFnReturnType): Promise<void> {
-    for (const model of models) {
-        const result = await createFn(model);
+async function addToRepoHelper<Model, CreateFnReturnType extends Promise<Result<Model, any>>>(
+    models: Model[],
+    createFn: (model: Model) => CreateFnReturnType
+): Promise<void> {
+    for(let i = 0; i < models.length; i++) {
+        const result = await createFn(models[i]!);
         if (resultIsFail(result)) {
-            throwModelAddFailureError(model);
+            throw new Error(`InMemDbPopulation: failed to add model to repository:\n${JSON.stringify(models[i])}\n${JSON.stringify(result)}`);
+        } else {
+            models[i] = result.result;
         }
     }
 }
 
 const repositories = Object.freeze({
     exerciseCategory: container.resolve(DI_TOKEN.ExerciseCategoryRepository),
-    exercise: container.resolve(DI_TOKEN.ExerciseRepository),
+    exercise: container.resolve(DI_TOKEN.UserExerciseRepository),
     exercisesBySocialGroup: container.resolve(DI_TOKEN.ExercisesBySocialGroupRepository),
     socialGroup: container.resolve(DI_TOKEN.SocialGroupRepository),
     user: container.resolve(DI_TOKEN.UserRepository),
@@ -34,143 +36,170 @@ const repositories = Object.freeze({
     workoutLog: container.resolve(DI_TOKEN.WorkoutLogRepository)
 });
 
-const exerciseCategoriesInit = IIFE(() => {
-    const PUSH = "Push";
-    const LOWER_BODY = "Lower Body";
-    const CARDIO = "Cardio";
+abstract class ModelsInit<Model> {
+    protected readonly abstract models: Model[];
 
-    const Push: ExerciseCategory = {
-        id: 0,
-        name: PUSH
-    };
-    const LowerBody: ExerciseCategory = {
-        id: 1,
-        name: LOWER_BODY
-    };
-    const Cardio: ExerciseCategory = {
-        id: 2,
-        name: CARDIO
-    };
+    get all(): Model[] {
+        return this.models;
+    }
+}
 
-    return {
-        [PUSH]: Push,
-        [LOWER_BODY]: LowerBody,
-        [CARDIO]: Cardio
-    };
-});
+const usersInit = new class extends ModelsInit<User> {
+    protected readonly models = [
+        {
+            "email": "arie_bisfki@live.nl",
+            "password": "Yeetyeet1!",
+            "firstName": "Arie",
+            "lastName": "Bisfki",
+            "username": "arie_yeet",
+            "prefix": ""
+        }
+    ];
 
-addToRepoHelper(Object.values(exerciseCategoriesInit), fnBind(repositories.exerciseCategory, "create"));
+    get arie() {
+        return this.models[0]!;
+    }
+}
 
-const exercisesInit = IIFE(() => {
-    const BENCH_PRESS = "Bench Press";
-    const SQUAT = "Squat";
-    const RUNNING = "Running";
+const exerciseCategoriesInit = new class extends ModelsInit<ExerciseCategory> {
+    protected readonly models = [
+        {
+            name: "Push"
+        },
+        {
+            name: "Lower Body"
+        }
+    ];
 
-    const benchPressExercise: Exercise = {
-        id: 1,
-        name: BENCH_PRESS,
-        category: exerciseCategoriesInit.Push
-    };
+    get all() {
+        return this.models;
+    }
 
-    const squatExercise: Exercise = {
-        id: 2,
-        name: SQUAT,
-        category: exerciseCategoriesInit["Lower Body"]
-    };
+    get push() {
+        return this.models[0]!;
+    }
 
-    const runningExercise: Exercise = {
-        id: 3,
-        name: RUNNING,
-        category: exerciseCategoriesInit.Cardio
-    };
+    get lowerBody() {
+        return this.models[1]!;
+    }
+};
 
-    return {
-        [BENCH_PRESS]: benchPressExercise,
-        [SQUAT]: squatExercise,
-        [RUNNING]: runningExercise
-    };
-});
-addToRepoHelper(Object.values(exercisesInit), fnBind(repositories.exercise, "create"));
-
-const socialGroupsInit = IIFE(() => {
-    const socialGroup1 = "socialgroup1";
-    const socialGroup2 = "socialgroup2";
-    const socialGroup3 = "socialgroup3";
-
-    return {
-        [socialGroup1]: {
-            users: [users.Arie],
+const exercisesInit = new class extends ModelsInit<Exercise> {
+    protected readonly models = [
+        {
+            id: 0,
+            name: "Bench Press",
+            category: exerciseCategoriesInit.push
+        },
+        {
             id: 1,
-            name: socialGroup1,
-            workoutLogs: workoutLogsInit
-        },
-        [socialGroup2]: {
-            users: [users.Arie],
-            id: 2,
-            name: socialGroup2,
-            workoutLogs: workoutLogsInit
-        },
-        [socialGroup3]: {
-            users: [users.Arie],
-            id: 3,
-            name: socialGroup3,
-            workoutLogs: workoutLogsInit
+            name: "Squat",
+            category: exerciseCategoriesInit.lowerBody
         }
-    };
-});
-addToRepoHelper(Object.values(socialGroupsInit), fnBind(repositories.socialGroup, "create"));
+    ];
 
-const exercisesBySocialGroupsInit = [
-    {
-        socialGroup: socialGroupsInit.socialgroup1,
-        exercises: [
-            exercisesInit["Bench Press"],
-            exercisesInit["Squat"]
-        ]
-    },
-    {
-        socialGroup: socialGroupsInit.socialgroup2,
-        exercises: Object.values(exercisesInit)
+    get benchPress() {
+        return this.models[0]!;
     }
-];
-IIFE(async () => {
-    for (const model of exercisesBySocialGroupsInit) {
-        const result = await repositories.exercisesBySocialGroup.create(model.socialGroup, model.exercises);
-        if (resultIsFail(result)) {
-            throwModelAddFailureError(model);
-        }
+
+    get squat() {
+        return this.models[1]!;
     }
-});
+}
 
-const usersInit = IIFE(() => {
-   const arie = "Arie";
+const exercisesByUserInit = new class extends ModelsInit<ExercisesByUser> {
+    protected readonly models = usersInit.all.map(user => ({
+        user,
+        exercises: exercisesInit.all
+    }));
 
-   const arieUser: User = {
-       "id": 1,
-       "email": "arie_bisfki@live.nl",
-       "password": "Yeetyeet1!",
-       "firstName": arie,
-       "lastName": "Bisfki",
-       "username": "arie_yeet",
-       "prefix": ""
-   };
+    get arie() {
+        return this.models[0]!;
+    }
+};
 
-   return {
-       [arie]: arieUser
-   };
-});
-addToRepoHelper(Object.values(usersInit), fnBind(repositories.user, "create"));
-
-const workoutLogsInit: WorkoutLog[] = [
-    {
-        id: 1,
-        exerciseLogs: [
-            new ResistanceExerciseLog(exercisesInit["Bench Press"],10,4,100),
-            new ResistanceExerciseLog(exercisesInit.Squat,10,4,150),
-            new CardioExerciseLog(exercisesInit.Running,30)
-        ],
+const workoutLogsInit = new class extends ModelsInit<WorkoutLog> {
+    protected readonly models = usersInit.all.map(user => ({
         date: new Date(),
-        user: users.Arie
+        user,
+        exerciseLogs: [
+            {
+                exercise: exercisesInit.benchPress,
+                sets: newArrayWithSize(4).map(_ => ({
+                    reps: 10,
+                    weight: 100
+                }))
+            },
+            {
+                exercise: exercisesInit.squat,
+                sets: newArrayWithSize(4).map(_ => ({
+                    reps: 10,
+                    weight: 150
+                }))
+            }
+        ]
+    }));
+};
+
+const socialGroupsInit = new class extends ModelsInit<SocialGroup> {
+    protected readonly models = [
+        {
+            users: [usersInit.arie],
+            name: "1",
+            workoutLogs: workoutLogsInit.all
+        },
+        {
+            users: usersInit.all,
+            name: "2",
+            workoutLogs: workoutLogsInit.all
+        },
+        {
+            users: usersInit.all,
+            name: "3",
+            workoutLogs: workoutLogsInit.all
+        }
+    ];
+
+    get one() {
+        return this.models[0]!;
     }
-];
-addToRepoHelper(workoutLogsInit, fnBind(repositories.workoutLog, "create"));
+
+    get two() {
+        return this.models[1]!;
+    }
+
+    get three() {
+        return this.models[2]!;
+    }
+};
+
+const exercisesBySocialGroupsInit = new class extends ModelsInit<ExercisesBySocialGroup> {
+    protected readonly models = [
+        {
+            socialGroup: socialGroupsInit.one,
+            exercises: exercisesInit.all
+        },
+        {
+            socialGroup: socialGroupsInit.two,
+            exercises: [exercisesInit.benchPress]
+        }
+    ];
+
+    get one() {
+        return this.models[0]!;
+    }
+
+    get two() {
+        return this.models[1]!;
+    }
+};
+
+IIFE(async () => {
+    await addToRepoHelper(usersInit.all, fnBind(repositories.user, "create"));
+    await addToRepoHelper(exerciseCategoriesInit.all, fnBind(repositories.exerciseCategory, "create"));
+    await addToRepoHelper(exercisesByUserInit.all, ({exercises, user}) => repositories.exercise.create(exercises, user.id!));
+    await addToRepoHelper(workoutLogsInit.all, fnBind(repositories.workoutLog, "create"));
+    await addToRepoHelper(socialGroupsInit.all, fnBind(repositories.socialGroup, "create"));
+    await addToRepoHelper(exercisesBySocialGroupsInit.all, ({exercises, socialGroup: {id: socialGroupId}}) =>
+        repositories.exercisesBySocialGroup.create(socialGroupId!, exercises));
+});

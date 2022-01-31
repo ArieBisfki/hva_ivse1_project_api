@@ -15,7 +15,6 @@ export class AuthTokenService extends AbstractAuthTokenService {
             jwt.sign(this.generatePayload(userId), tokenType.secret(), {
                 expiresIn: tokenType.expiresIn
             }, (err, token) => {
-                console.log({err});
                 const toResolve = err == null && token != null
                     ? token
                     : undefined;
@@ -31,7 +30,6 @@ export class AuthTokenService extends AbstractAuthTokenService {
                 maxAge: tokenType.expiresIn
             }, async (verifyErrors, decoded) => {
                 if (verifyErrors) {
-                    console.log({verifyErrors});
                     return err(E.VALIDATION);
                 }
 

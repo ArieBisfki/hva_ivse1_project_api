@@ -1,5 +1,5 @@
 import { SocialGroup } from "../../models/social/SocialGroup";
-import {exec, Fail, Result, Success} from "../../utils/FailOrSuccess";
+import {exec, Fail, Result, resultIsFail, Success} from "../../utils/FailOrSuccess";
 import ISocialGroupRepository from "./ISocialGroupRepository";
 import SocialGroupRepositoryError from "./SocialGroupRepositoryError";
 import 'reflect-metadata';
@@ -13,15 +13,23 @@ type R<S,F> = Result<S,F>;
 export default class SocialGroupRepositoryInMem implements ISocialGroupRepository{
 
     private readonly crudUtil = container.resolve(DI_TOKEN.CRUDUtilInMem);
-
     private socialGroups: SocialGroup[] = [];
+    private newId = 0;
 
     async create(socialGroup: SocialGroup): Promise<R<SocialGroup, E["DUPLICATE"]>> {
-        return this.crudUtil.create({
-            models: this.socialGroups,
-            toCreate: socialGroup,
-            equalityBy: "id",
-            duplicateError: E.DUPLICATE
+        return exec(async (resolve, err) => {
+            const createResult = await this.crudUtil.create({
+                models: this.socialGroups,
+                toCreate: socialGroup,
+                equalityBy: "id"
+            });
+
+            if (resultIsFail(createResult)) {
+                return err(E.DUPLICATE);
+            } else {
+                createResult.result.id = this.newId++;
+                return resolve(createResult.result);
+            }
         });
     }
 
@@ -51,7 +59,7 @@ export default class SocialGroupRepositoryInMem implements ISocialGroupRepositor
     async delete(id: number): Promise<boolean> {
         return this.crudUtil.delete({
             models: this.socialGroups,
-            filterBy: ["id", id]
+            findBy: ["id", id]
         });    
     }
 
